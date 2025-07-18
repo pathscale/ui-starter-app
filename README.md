@@ -12,8 +12,9 @@ This starter kit provides a solid foundation for building modern web application
 
 Organizes code by domain features:
 
-- Authentication (`auth/`)
-- Home and landing pages (`home/`)
+- Authentication (`auth/`) - Login, signup, and public pages
+- Admin (`admin/`) - Admin dashboard and management
+- User (`user/`) - User-specific features and pages
 - Each feature contains its own pages, components, and hooks
 
 #### 2. Shared Components (`src/components/`)

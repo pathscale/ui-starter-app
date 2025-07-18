@@ -1,9 +1,9 @@
 import { Component } from "solid-js";
 
 // Import page components
-import HomePage from "./features/home/pages/HomePage";
+import HomePage from "./features/auth/pages/HomePage";
 import LoginPage from "./features/auth/pages/LoginPage";
-import NotFoundPage from "./features/home/pages/NotFoundPage";
+import NotFoundPage from "./features/auth/pages/NotFoundPage";
 
 export interface RouteConfig {
   name: string;
