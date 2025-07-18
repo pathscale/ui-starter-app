@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Solid.js starter kit with common structure from pays.online and honey.id",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathscale/ui-starter-app"
+  },
   "scripts": {
     "start": "rsbuild dev",
     "dev": "rsbuild dev",

@@ -1,6 +1,6 @@
-# Solid.js Starter Kit
+# Solid.js Starter Kit with @pathscale/ui
 
-A comprehensive starter kit for Solid.js applications with a feature-based architecture and modern tooling.
+A comprehensive starter kit for Solid.js applications using [@pathscale/ui](https://github.com/pathscale/vue3-ui) component library with a feature-based architecture and modern tooling.
 
 ## Architecture Overview
 
@@ -15,7 +15,7 @@ Organizes code by domain features:
 - Authentication (`auth/`) - Login, signup, and public pages
 - Admin (`admin/`) - Admin dashboard and management
 - User (`user/`) - User-specific features and pages
-- Each feature contains its own pages, components, and hooks
+- Each feature contains its own pages, components, hooks, and stores
 
 #### 2. Shared Components (`src/components/`)
 
@@ -49,7 +49,7 @@ Custom hooks for common patterns:
 
 ### Styling System
 
-The application uses a modern CSS approach:
+The application uses a modern CSS approach with TailwindCSS and DaisyUI:
 
 ```css
 /* Theme configuration */
@@ -135,3 +135,11 @@ npm run format
 # or
 bun format
 ```
+
+## About @pathscale/ui
+
+This starter kit uses [@pathscale/ui](https://github.com/pathscale/vue3-ui), a component library originally built for Vue.js but adapted for Solid.js. The library provides a comprehensive set of UI components that follow best practices and are highly customizable.
+
+## License
+
+MIT

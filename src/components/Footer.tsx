@@ -1,13 +1,14 @@
 import { Component } from "solid-js";
+import { Footer } from "@pathscale/ui";
 
-export const Footer: Component = () => {
+const AppFooter: Component = () => {
   return (
-    <footer class="footer footer-center p-4 bg-base-300 text-base-content">
+    <Footer center class="bg-base-300 text-base-content p-4">
       <div>
-        <p>Copyright © {new Date().getFullYear()} - Solid Starter Kit</p>
+        <p>Pathscale © {new Date().getFullYear()} - Solid Starter Kit</p>
       </div>
-    </footer>
+    </Footer>
   );
 };
 
-export default Footer;
+export default AppFooter;

@@ -3,7 +3,7 @@ import { Route, Router } from "@solidjs/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { Toaster } from "solid-sonner";
 import ToastContainer from "./components/ToastContainer";
-import Footer from "./components/Footer";
+import AppFooter from "./components/Footer";
 import { routes } from "./routes";
 import ThemeToggle from "./ThemeToggle";
 
@@ -29,7 +29,7 @@ const Layout: Component<LayoutProps> = (props) => {
         <ThemeToggle />
       </div>
       <div class="flex-1">{props.children}</div>
-      <Footer />
+      <AppFooter />
       <ToastContainer />
     </div>
   );
