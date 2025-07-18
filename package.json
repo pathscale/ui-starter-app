@@ -19,9 +19,7 @@
     "commit": "cz"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,css,md}": [
-      "biome check --apply"
-    ]
+    "*.{ts,tsx,js,jsx,json,css,md}": ["biome check --apply"]
   },
   "config": {
     "commitizen": {
@@ -30,11 +28,14 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@felte/solid": "^1.2.14",
+    "@felte/validator-zod": "^1.0.18",
     "@modular-forms/solid": "^0.25.1",
     "@pathscale/ui": "^0.0.84",
     "@solid-primitives/refs": "^1.1.1",
     "@solidjs/router": "^0.15.3",
     "@tanstack/solid-query": "^5.76.0",
+    "@tanstack/solid-table": "^8.21.3",
     "clsx": "^2.1.1",
     "daisyui": "^5.0.43",
     "solid-icons": "^1.1.0",
