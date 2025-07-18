@@ -1,52 +1,92 @@
 # Solid.js Starter Kit
 
-A comprehensive starter kit for Solid.js applications with common structure and utilities from pays.online and honey.id.
+A comprehensive starter kit for Solid.js applications with a feature-based architecture and modern tooling.
 
-## Features
+## Architecture Overview
 
-- 🚀 Built with [Solid.js](https://www.solidjs.com/)
-- 🧰 [RSBuild](https://rsbuild.dev/) for fast builds and development
-- 🎨 [TailwindCSS](https://tailwindcss.com/) and [DaisyUI](https://daisyui.com/) for styling
-- 🔄 [TanStack Query](https://tanstack.com/query/latest) for data fetching
-- 📝 [Modular Forms](https://modularforms.dev/) for form handling
-- 🌙 Light/Dark mode with theme persistence
-- 🔔 Toast notifications system
-- 🧩 Common components and layouts
-- 🪝 Reusable hooks for data fetching and mutations
-- 🔧 [Biome](https://biomejs.dev/) for linting and formatting
+This starter kit provides a solid foundation for building modern web applications with Solid.js, featuring:
 
-## Directory Structure
+### Core Components
 
+#### 1. Feature-based Structure (`src/features/`)
+
+Organizes code by domain features:
+
+- Authentication (`auth/`)
+- Home and landing pages (`home/`)
+- Each feature contains its own pages, components, and hooks
+
+#### 2. Shared Components (`src/components/`)
+
+Reusable UI elements:
+
+- Toast notifications
+- Form elements
+- Layout components
+
+#### 3. Layouts (`src/layouts/`)
+
+Page layout templates:
+
+- Public layout for unauthenticated pages
+- Auth layout for login/signup forms
+
+#### 4. State Management (`src/stores/`)
+
+Global state management:
+
+- Toast notifications store
+- Theme preferences
+
+#### 5. Utility Hooks (`src/hooks/`)
+
+Custom hooks for common patterns:
+
+- Query hooks for data fetching
+- Action hooks for mutations
+- Standardized hook patterns
+
+### Styling System
+
+The application uses a modern CSS approach:
+
+```css
+/* Theme configuration */
+@theme {
+  --color-telegram: oklch(67% 0.136 236.45);
+  --color-telegram-content: oklch(100% 0 0);
+}
+
+/* Base styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
 ```
-src/
-├── assets/        # Static assets like images, fonts, etc.
-├── components/    # Reusable UI components
-│   └── forms/     # Form-related components
-├── hooks/         # Custom hooks
-├── layouts/       # Page layouts
-├── lib/           # Utility libraries
-├── models/        # Data models and types
-├── services/      # Service layer for API interactions
-├── stores/        # Global state management
-├── styles/        # Global styles and theme definitions
-│   └── themes/    # Theme-specific styles
-└── utils/         # Utility functions
-```
+
+### Theme Support
+
+Built-in light and dark mode:
+
+- Theme detection based on system preferences
+- Manual theme toggle
+- Theme persistence in localStorage
+
+### Key Features
+
+- **Modern Build System**: RSBuild for fast development and optimized production builds
+- **Type Safety**: Full TypeScript support throughout the application
+- **Styling**: TailwindCSS and DaisyUI for rapid UI development
+- **Data Fetching**: TanStack Query for efficient data management
+- **Forms**: Modular Forms for form state management
+- **Code Quality**: Biome for linting and formatting
 
 ## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- npm or bun
 
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/solid-starter-kit.git
-cd solid-starter-kit
-
 # Install dependencies
 npm install
 # or
@@ -56,30 +96,41 @@ bun install
 ### Development
 
 ```bash
-# Start the development server
+# Start development server
 npm run dev
 # or
 bun dev
 ```
 
-### Building for Production
+### Production
 
 ```bash
-# Build the app for production
+# Build for production
 npm run build
 # or
 bun build
-```
 
-### Preview Production Build
-
-```bash
-# Preview the production build
+# Preview production build
 npm run preview
 # or
 bun preview
 ```
 
-## License
+### Code Quality
 
-MIT
+```bash
+# Type checking
+npm run typecheck
+# or
+bun typecheck
+
+# Linting
+npm run lint
+# or
+bun lint
+
+# Formatting
+npm run format
+# or
+bun format
+```
