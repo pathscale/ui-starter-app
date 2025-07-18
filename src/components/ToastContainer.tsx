@@ -1,4 +1,5 @@
-import { Component, For } from "solid-js";
+import { Button } from "@pathscale/ui";
+import { type Component, For } from "solid-js";
 import { toastStore } from "~/stores/toastStore";
 
 export const ToastContainer: Component = () => {
@@ -11,20 +12,17 @@ export const ToastContainer: Component = () => {
               toast.type === "error"
                 ? "alert-error"
                 : toast.type === "success"
-                ? "alert-success"
-                : toast.type === "warning"
-                ? "alert-warning"
-                : "alert-info"
+                  ? "alert-success"
+                  : toast.type === "warning"
+                    ? "alert-warning"
+                    : "alert-info"
             } shadow-lg`}
           >
             <div>
               <span>{toast.message}</span>
-              <button
-                class="btn btn-circle btn-xs"
-                onClick={() => toastStore.removeToast(toast.id)}
-              >
+              <Button shape="circle" size="xs" onClick={() => toastStore.removeToast(toast.id)}>
                 ✕
-              </button>
+              </Button>
             </div>
           </div>
         )}
