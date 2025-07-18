@@ -1,37 +1,53 @@
-import Button, {
-  type ButtonVariantProps,
-} from "@pathscale/ui/components/button";
-import { createSignal, For } from "solid-js";
+import { Component, JSX } from "solid-js";
+import { Route, Router } from "@solidjs/router";
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
+import { Toaster } from "solid-sonner";
+import ToastContainer from "./components/ToastContainer";
+import Footer from "./components/Footer";
+import { routes } from "./routes";
+import ThemeToggle from "./ThemeToggle";
 
-export default function App() {
-  const [color, setColor] =
-    createSignal<ButtonVariantProps["color"]>("primary");
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
+// Simple layout component
+interface LayoutProps {
+  children?: JSX.Element;
+}
+
+const Layout: Component<LayoutProps> = (props) => {
   return (
-    <div>
-      <select
-        name="color"
-        id="color"
-        value={color()}
-        onChange={(e) =>
-          setColor(e.currentTarget.value as ButtonVariantProps["color"])
-        }
-      >
-        <For
-          each={[
-            "inverse",
-            "primary",
-            "secondary",
-            "tertiary",
-            "accent",
-            "positive",
-            "destructive",
-          ]}
-        >
-          {(color) => <option value={color}>{color}</option>}
-        </For>
-      </select>
-      <Button color={color()}>Button</Button>
+    <div class="min-h-screen flex flex-col">
+      <div class="flex justify-end p-4">
+        <ThemeToggle />
+      </div>
+      <div class="flex-1">{props.children}</div>
+      <Footer />
+      <ToastContainer />
     </div>
   );
-}
+};
+
+const App: Component = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <div class="h-screen">
+        <Router root={Layout}>
+          {routes.map(({ path, component: Component }) => (
+            <Route path={path} component={Component} />
+          ))}
+        </Router>
+        <Toaster position="bottom-right" />
+      </div>
+    </QueryClientProvider>
+  );
+};
+
+export default App;

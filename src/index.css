@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@source "../node_modules/@pathscale/ui/";
+@plugin "daisyui";
+@import "@pathscale/ui/dist/sidenav/Sidenav.css";
+
+@import "./styles/themes/dark.css";
+@import "./styles/themes/light.css";
+
+@theme {
+  --color-telegram: oklch(67% 0.136 236.45);
+  --color-telegram-content: oklch(100% 0 0);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
