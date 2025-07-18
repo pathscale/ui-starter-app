@@ -1,6 +1,7 @@
-import { Component } from "solid-js";
-import { setTheme, theme } from "~/lib/theme";
+import { Button } from "@pathscale/ui";
 import { FiMoon, FiSun } from "solid-icons/fi";
+import type { Component } from "solid-js";
+import { setTheme, theme } from "~/lib/theme";
 
 export const ThemeToggle: Component = () => {
   const toggleTheme = () => {
@@ -9,20 +10,14 @@ export const ThemeToggle: Component = () => {
   };
 
   return (
-    <button
+    <Button
       type="button"
       onClick={toggleTheme}
       class="btn btn-ghost btn-circle"
-      aria-label={
-        theme() === "light" ? "Switch to dark mode" : "Switch to light mode"
-      }
+      aria-label={theme() === "light" ? "Switch to dark mode" : "Switch to light mode"}
     >
-      {theme() === "light" ? (
-        <FiMoon class="w-5 h-5" />
-      ) : (
-        <FiSun class="w-5 h-5" />
-      )}
-    </button>
+      {theme() === "light" ? <FiMoon class="h-5 w-5" /> : <FiSun class="h-5 w-5" />}
+    </Button>
   );
 };
 
