@@ -1,52 +1,54 @@
-import { Component, JSX } from "solid-js";
-import { Route, Router } from "@solidjs/router";
-import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
-import { Toaster } from "solid-sonner";
-import ToastContainer from "./components/ToastContainer";
-import AppFooter from "./components/Footer";
-import { routes } from "./routes";
+import { Flex, Link } from "@pathscale/ui";
+import type { Component } from "solid-js";
+import Counter from "~/components/Counter";
+import Footer from "~/components/Footer";
+import Logo from "~/components/Logo";
 import ThemeToggle from "./ThemeToggle";
-
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
-// Simple layout component
-interface LayoutProps {
-  children?: JSX.Element;
-}
-
-const Layout: Component<LayoutProps> = (props) => {
-  return (
-    <div class="min-h-screen flex flex-col">
-      <div class="flex justify-end p-4">
-        <ThemeToggle />
-      </div>
-      <div class="flex-1">{props.children}</div>
-      <AppFooter />
-      <ToastContainer />
-    </div>
-  );
-};
 
 const App: Component = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <div class="h-screen">
-        <Router root={Layout}>
-          {routes.map(({ path, component: Component }) => (
-            <Route path={path} component={Component} />
-          ))}
-        </Router>
-        <Toaster position="bottom-right" />
+    <Flex direction="col" align="center" justify="center" class="min-h-screen gap-4 p-4">
+      <div class="absolute top-4 right-4">
+        <ThemeToggle />
       </div>
-    </QueryClientProvider>
+
+      <Logo />
+      <h1 class="font-bold text-4xl">Welcome to your Solid.js + @pathscale/ui App</h1>
+      <p>This app is up and running. Here are some useful links:</p>
+
+      <Flex gap="md" justify="center" wrap="wrap">
+        <Link href="https://solidjs.com/docs" target="_blank" rel="noopener noreferrer">
+          Solid Documentation
+        </Link>
+        <Link
+          href="https://js--software.b-cdn.net/showcases"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          @pathscale/ui Components
+        </Link>
+        <Link
+          href="https://github.com/solidjs/solid-router"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Solid Router
+        </Link>
+        <Link
+          href="https://tanstack.com/query/latest/docs/solid/overview"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Tanstack Query
+        </Link>
+        <Link href="https://zod.dev/" target="_blank" rel="noopener noreferrer">
+          Zod Validation
+        </Link>
+      </Flex>
+
+      <Counter />
+      <Footer />
+    </Flex>
   );
 };
 
