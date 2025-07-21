@@ -1,9 +1,10 @@
 import type { Component } from "solid-js";
+import { Footer as LibFooter } from "@pathscale/ui";
 
 export const Footer: Component = () => (
-  <footer class="mt-8 text-center text-gray-500 text-sm">
+  <LibFooter center class="text-sm text-base-content">
     © 2025 Your App. Powered by Solid.js + @pathscale/ui
-  </footer>
+  </LibFooter>
 );
 
 export default Footer;
