@@ -4,11 +4,14 @@
     "": {
       "name": "solid-starter-kit",
       "dependencies": {
+        "@felte/solid": "^1.2.14",
+        "@felte/validator-zod": "^1.0.18",
         "@modular-forms/solid": "^0.25.1",
-        "@pathscale/ui": "^0.0.84",
+        "@pathscale/ui": "^0.0.94",
         "@solid-primitives/refs": "^1.1.1",
         "@solidjs/router": "^0.15.3",
         "@tanstack/solid-query": "^5.76.0",
+        "@tanstack/solid-table": "^8.21.3",
         "clsx": "^2.1.1",
         "daisyui": "^5.0.43",
         "solid-icons": "^1.1.0",
@@ -217,7 +220,7 @@
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@0.2.12", "", { "dependencies": { "@emnapi/core": "^1.4.3", "@emnapi/runtime": "^1.4.3", "@tybys/wasm-util": "^0.10.0" } }, "sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ=="],
 
-    "@pathscale/ui": ["@pathscale/ui@0.0.84", "", { "dependencies": { "@iconify/tailwind4": "^1.0.6", "@solid-primitives/event-listener": "^2.3.0", "@solid-primitives/intersection-observer": "^2.1.3", "@solid-primitives/keyboard": "^1.2.5", "@solid-primitives/media": "^2.2.5", "@solid-primitives/props": "^3.1.8", "@solid-primitives/resize-observer": "^2.0.22", "@solid-primitives/scheduled": "^1.4.1", "@solid-primitives/scroll": "^2.0.20", "@solid-primitives/storage": "^2.1.1", "@solid-primitives/utils": "^6.2.1", "rsbuild-plugin-iconify": "^1.0.3", "solid-js": "^1.9.7" }, "peerDependencies": { "@felte/solid": "^1.2.0", "@felte/validator-zod": "^1.0.0", "@tanstack/solid-table": "^8.0.0", "zod": "^3.22.0" } }, "sha512-Q3Jnn3J+H91z9/RRDNBVFPZ4H7ewvYyWK+uupgskljekXgWYw0/Tto9mkcPUh9TlR5+PPgHf290mNAKZdzH71g=="],
+    "@pathscale/ui": ["@pathscale/ui@0.0.94", "", { "dependencies": { "@iconify/tailwind4": "^1.0.6", "@solid-primitives/event-listener": "^2.3.0", "@solid-primitives/intersection-observer": "^2.1.3", "@solid-primitives/keyboard": "^1.2.5", "@solid-primitives/media": "^2.2.5", "@solid-primitives/props": "^3.1.8", "@solid-primitives/resize-observer": "^2.0.22", "@solid-primitives/scheduled": "^1.4.1", "@solid-primitives/scroll": "^2.0.20", "@solid-primitives/storage": "^2.1.1", "@solid-primitives/utils": "^6.2.1", "rsbuild-plugin-iconify": "^1.0.3", "solid-js": "^1.9.7" }, "peerDependencies": { "@felte/solid": "^1.2.0", "@felte/validator-zod": "^1.0.0", "@tanstack/solid-table": "^8.0.0", "zod": "^3.22.0" } }, "sha512-qnW8sjhARFM4BbEY0F5ThqiDYmYYLTiX7IenRH7Zc7pA3LsW8SsYDk74uh01QOWB8i0VvDwGkZJvfrOng/LZxA=="],
 
     "@rsbuild/core": ["@rsbuild/core@1.4.7", "", { "dependencies": { "@rspack/core": "1.4.8", "@rspack/lite-tapable": "~1.0.1", "@swc/helpers": "^0.5.17", "core-js": "~3.44.0", "jiti": "^2.4.2" }, "bin": { "rsbuild": "bin/rsbuild.js" } }, "sha512-mYvMYlCKUQAfz7x7GJnD6lBsVBfUSEAfrZLxkDQ0F3w7If9cQpHWLWZWdRmcFFy3Pzns1Edxn0st1nAmcFhRJQ=="],
 

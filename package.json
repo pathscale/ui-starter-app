@@ -31,7 +31,7 @@
     "@felte/solid": "^1.2.14",
     "@felte/validator-zod": "^1.0.18",
     "@modular-forms/solid": "^0.25.1",
-    "@pathscale/ui": "^0.0.84",
+    "@pathscale/ui": "^0.0.94",
     "@solid-primitives/refs": "^1.1.1",
     "@solidjs/router": "^0.15.3",
     "@tanstack/solid-query": "^5.76.0",
