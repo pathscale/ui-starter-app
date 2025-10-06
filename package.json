@@ -35,6 +35,7 @@
     "@solid-primitives/refs": "^1.1.1",
     "@solidjs/router": "^0.15.3",
     "@tanstack/solid-query": "^5.76.0",
+    "@tanstack/solid-query-devtools": "^5.90.3",
     "@tanstack/solid-table": "^8.21.3",
     "clsx": "^2.1.1",
     "daisyui": "^5.0.43",
