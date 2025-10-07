@@ -3,6 +3,8 @@
 @source "../node_modules/@pathscale/ui/";
 @plugin "daisyui";
 @import "@pathscale/ui/dist/sidenav/Sidenav.css";
+@import "@pathscale/ui/dist/styles/icons/generated-icons.css";
+@import "daisyui/components/diff.css";
 
 @import "./styles/themes/dark.css";
 @import "./styles/themes/light.css";
