@@ -10,16 +10,19 @@
   "scripts": {
     "start": "rsbuild dev",
     "dev": "rsbuild dev",
-    "build": "npm run typecheck && rsbuild build",
+    "build": "npm run typecheck && rsbuild build && bun run cleanup",
     "typecheck": "tsc --noEmit",
     "preview": "rsbuild preview",
+    "cleanup": "bun run src/scripts/cleanup.js",
     "prepare": "husky",
     "lint": "biome check .",
     "format": "biome format . --write",
     "commit": "cz"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,css,md}": ["biome check --apply"]
+    "*.{ts,tsx,js,jsx,json,css,md}": [
+      "biome check --apply"
+    ]
   },
   "config": {
     "commitizen": {
@@ -40,6 +43,7 @@
     "@tanstack/solid-table": "^8.21.3",
     "clsx": "^2.1.1",
     "daisyui": "^5.0.43",
+    "glob": "^11.0.3",
     "solid-icons": "^1.1.0",
     "solid-js": "^1.9.5",
     "solid-sonner": "^0.2.8",
