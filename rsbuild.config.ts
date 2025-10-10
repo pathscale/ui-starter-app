@@ -42,6 +42,10 @@ export default defineConfig({
   },
   tools: {
     rspack: {
+      optimization: {
+        splitChunks: false,
+        runtimeChunk: false,
+      },
       plugins: [
         new ForkTsCheckerWebpackPlugin({
           typescript: {
