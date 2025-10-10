@@ -1,0 +1,56 @@
+name: web3.trading
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Set Version
+        run: |
+          echo "Version: 1.0.${GITHUB_RUN_NUMBER}"
+          sed -i "s/\"version\": \".*\"/\"version\": \"1.0.${GITHUB_RUN_NUMBER}\"/" package.json
+          echo "GITHUB_RUN_NUMBER=${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+      - name: Build project
+        run: bun run build
+
+      - name: Mirror index.html to 404
+        run: |
+          cd dist
+          mkdir -p bunnycdn_errors
+          cp index.html bunnycdn_errors/404.html
+
+      - name: Deploy to BunnyCDN
+        env:
+          STORAGE_API_KEY: ${{ secrets.BUNNYCDN_STORAGE_API_KEY }}
+          ZONE_API_KEY: ${{ secrets.BUNNYCDN_ZONE_API_KEY }}
+          ZONE_ID: ${{ secrets.BUNNYCDN_DEV_ZONE_ID }}
+          STORAGE_NAME: ${{ secrets.BUNNYCDN_STORAGE_NAME }}
+        run: |
+          cd dist
+          for file in $(find . -type f); do
+            curl -X PUT -H "AccessKey: $STORAGE_API_KEY" -T "$file" "https://storage.bunnycdn.com/$STORAGE_NAME/$file"
+          done
+          curl -X POST \
+            -H "AccessKey: $ZONE_API_KEY" \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/json" \
+            "https://bunnycdn.com/api/pullzone/$ZONE_ID/purgeCache" \
+            -d "{\"id\":$ZONE_ID}"
