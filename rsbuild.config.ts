@@ -1,6 +1,7 @@
 import { defineConfig } from "@rsbuild/core";
 import { pluginBabel } from "@rsbuild/plugin-babel";
 import { pluginSolid } from "@rsbuild/plugin-solid";
+import CompressionPlugin from "compression-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 
 export default defineConfig({
@@ -47,6 +48,21 @@ export default defineConfig({
         runtimeChunk: false,
       },
       plugins: [
+        ...(process.env.NODE_ENV === "production"
+          ? [
+              new CompressionPlugin({
+                algorithm: "brotliCompress",
+                filename: "[path][base].br",
+                test: /\.(js|mjs|css)$/,
+                exclude: /\/async\//,
+                compressionOptions: {
+                  level: 11,
+                },
+                threshold: 0,
+                minRatio: 1,
+              }),
+            ]
+          : []),
         new ForkTsCheckerWebpackPlugin({
           typescript: {
             configFile: "./tsconfig.json",
