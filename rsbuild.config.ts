@@ -1,7 +1,6 @@
 import { defineConfig } from "@rsbuild/core";
 import { pluginBabel } from "@rsbuild/plugin-babel";
 import { pluginSolid } from "@rsbuild/plugin-solid";
-import CompressionPlugin from "compression-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 
 export default defineConfig({
@@ -11,13 +10,15 @@ export default defineConfig({
     }),
     pluginSolid(),
   ],
-  source: {
+  resolve: {
     alias: {
       "~": "./src",
     },
+  },
+  source: {
     define: {
       "import.meta.env.VERSION": JSON.stringify(
-        process.env.GITHUB_RUN_NUMBER || "0.0.1"
+        process.env.GITHUB_RUN_NUMBER || "0.0.1",
       ),
     },
   },
@@ -26,12 +27,9 @@ export default defineConfig({
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
       "theme-color": "#000000",
-      "Cache-Control": "no-cache, no-store, must-revalidate",
-      Pragma: "no-cache",
-      Expires: "0",
-      description: "Solid.js Starter Kit",
+      description: "PathScale Solid.js + @pathscale/ui starter",
     },
-    title: "Solid Starter Kit",
+    title: "PathScale Starter",
     mountId: "root",
   },
   dev: {
@@ -48,21 +46,6 @@ export default defineConfig({
         runtimeChunk: false,
       },
       plugins: [
-        ...(process.env.NODE_ENV === "production"
-          ? [
-              new CompressionPlugin({
-                algorithm: "brotliCompress",
-                filename: "[path][base].br",
-                test: /\.(js|mjs|css)$/,
-                exclude: /\/async\//,
-                compressionOptions: {
-                  level: 11,
-                },
-                threshold: 0,
-                minRatio: 1,
-              }),
-            ]
-          : []),
         new ForkTsCheckerWebpackPlugin({
           typescript: {
             configFile: "./tsconfig.json",

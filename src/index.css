@@ -1,22 +1,29 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @source "../node_modules/@pathscale/ui/";
-@plugin "daisyui";
 @plugin "@iconify/tailwind4";
-@import "@pathscale/ui/dist/sidenav/Sidenav.css";
-@import "@pathscale/ui/dist/styles/icons/generated-icons.css";
-@import "daisyui/components/diff.css";
+@import "@pathscale/ui/index.css";
 
-@import "./styles/themes/dark.css";
 @import "./styles/themes/light.css";
-
-@theme {
-  --color-telegram: oklch(67% 0.136 236.45);
-  --color-telegram-content: oklch(100% 0 0);
-}
+@import "./styles/themes/dark.css";
 
 @layer base {
   html {
     scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

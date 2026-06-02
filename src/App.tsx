@@ -1,55 +1,25 @@
-import { Flex, Link } from "@pathscale/ui";
+import { Route, Router } from "@solidjs/router";
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import type { Component } from "solid-js";
-import Counter from "~/components/Counter";
-import Footer from "~/components/Footer";
-import Logo from "~/components/Logo";
-import ThemeToggle from "./ThemeToggle";
+import { ROUTES } from "~/config/routes";
+import LoginPage from "~/features/auth/pages/LoginPage";
+import SignupPage from "~/features/auth/pages/SignupPage";
+import HomePage from "~/features/home/pages/HomePage";
+import AppShell from "~/layouts/AppShell";
+import AuthLayout from "~/layouts/AuthLayout";
 
-const App: Component = () => {
-  return (
-    <Flex direction="col" align="center" justify="center" class="min-h-screen gap-4 p-4">
-      <div class="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
+const queryClient = new QueryClient();
 
-      <Logo />
-      <h1 class="font-bold text-4xl">Welcome to your Solid.js + @pathscale/ui App</h1>
-      <p>This app is up and running. Here are some useful links:</p>
-
-      <Flex gap="md" justify="center" wrap="wrap">
-        <Link href="https://solidjs.com/docs" target="_blank" rel="noopener noreferrer">
-          Solid Documentation
-        </Link>
-        <Link
-          href="https://js--software.b-cdn.net/showcases"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          @pathscale/ui Components
-        </Link>
-        <Link
-          href="https://github.com/solidjs/solid-router"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Solid Router
-        </Link>
-        <Link
-          href="https://tanstack.com/query/latest/docs/solid/overview"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Tanstack Query
-        </Link>
-        <Link href="https://zod.dev/" target="_blank" rel="noopener noreferrer">
-          Zod Validation
-        </Link>
-      </Flex>
-
-      <Counter />
-      <Footer />
-    </Flex>
-  );
-};
+const App: Component = () => (
+  <QueryClientProvider client={queryClient}>
+    <Router root={AppShell}>
+      <Route path={ROUTES.HOME} component={HomePage} />
+      <Route component={AuthLayout}>
+        <Route path={ROUTES.LOGIN} component={LoginPage} />
+        <Route path={ROUTES.SIGNUP} component={SignupPage} />
+      </Route>
+    </Router>
+  </QueryClientProvider>
+);
 
 export default App;
