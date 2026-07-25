@@ -52,11 +52,17 @@ Run the smallest relevant check first; widen only if it passes or the failure is
 
 Load only the reference needed for the current task — not all of them automatically:
 
-- **project map** — feature structure, routes, stores and app flow
-- **services contract** — endpoint wiring, hooks and generated DTO rules
-- **UI conventions** — SolidJS and `@pathscale/ui` usage
-- **validation** — exact commands for this repository (see above)
+- **[Frontend architecture](frontend-architecture.md)** — the `src/` skeleton: what
+  belongs in each directory, the `components/` vs `features/` split, where state lives,
+  and the routing layers. Marks which pieces this starter ships and which are the shape a
+  full app grows into.
+- **[Frontend services contract](frontend-services-contract.md)** — how a backend endpoint
+  is wired from its contract JSON through generated DTOs to the hook a component consumes,
+  and how errors surface. This starter has no backend wiring yet; the doc is the target
+  shape for an app that adds one.
+- **[`@pathscale/ui` usage reference](https://github.com/pathscale/ui/blob/master/docs/ui-usage.md)**
+  — theming, component conventions, forms, table, toast, icons. Lives in the `ui` repo and
+  is the single source of truth. Don't copy it here.
 
-> **TODO — these reference docs do not exist yet.** The names above are the intended
-> split; writing them is a follow-up project. Until they exist, this file plus the
-> services JSON is the reference. Don't go looking for files that aren't there.
+Validation is not a separate reference: this repository's exact commands are in the
+**Validation** section above.
