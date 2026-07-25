@@ -3,9 +3,10 @@
 How a `@pathscale/ui` application is laid out, so a new app doesn't start from a blank
 directory and an existing one stays recognisable to anyone who has worked on another.
 
-This starter ships the **core** of the skeleton. The rest of this document describes the
-shape a full application grows into — each section marks whether the starter has that
-piece yet, so nothing here is a claim about code that isn't present.
+This starter ships the working core, plus the rest of the skeleton as **empty directories
+with a README each** — so the shape is there from the first commit and you are never
+guessing where something goes. Each section below marks whether the directory has code in
+it yet, so nothing here is a claim about code that isn't present.
 
 Neighbours: [`frontend-conventions.md`](frontend-conventions.md) for the working
 agreement, [`frontend-services-contract.md`](frontend-services-contract.md) for backend
@@ -15,7 +16,7 @@ theming and forms.
 
 ## The skeleton
 
-**In this starter:**
+**With code in this starter:**
 
 ```
 src/
@@ -23,14 +24,15 @@ src/
   assets/  components/  config/  features/  layouts/  lib/  scripts/  styles/
 ```
 
-**Added as an app grows** — a data-backed app ends up with all of these:
+**Present as empty directories, each with a README describing what belongs there** — a
+data-backed app fills all of them:
 
 ```
   api/  constants/  hooks/  models/  services/  stores/  utils/
 ```
 
-**Added when the app needs them:** `pages/`, `routes.ts`, `types/`, `schemas/`,
-`contexts/`, `test/`.
+**Not here at all; add when the app needs them:** `pages/`, `routes.ts`, `types/`,
+`schemas/`, `contexts/`, `test/`.
 
 Keep the names. A directory called `helpers/` or `store/` costs every future reader — and
 every agent — the moment they have to work out whether it means `utils/` or `stores/`.
@@ -74,7 +76,7 @@ before you "tidy up" one into the other.
 
 - **`lib/`** — self-contained utilities with real internal complexity, often their own
   subdirectory. The starter has `src/lib/theme.ts`.
-- **`utils/`** *(not in the starter yet)* — small stateless helpers, one concern per file.
+- **`utils/`** *(empty here)* — small stateless helpers, one concern per file.
 
 Rule of thumb: if it grows a subdirectory and internal state, it belongs in `lib/`.
 
@@ -86,10 +88,10 @@ Rule of thumb: if it grows a subdirectory and internal state, it belongs in `lib
 - **`scripts/`** — build and codegen scripts run through `package.json`. Never imported by
   `src/`.
 
-### The data layer *(not in this starter)*
+### The data layer *(directories present, empty)*
 
-A backend-connected app adds these. Full detail in
-[`frontend-services-contract.md`](frontend-services-contract.md):
+A backend-connected app fills these; each has a README repeating the rule in place. Full
+detail in [`frontend-services-contract.md`](frontend-services-contract.md):
 
 - **`api/`** — transport wiring only: adapter configuration and the exported session
   objects. No business logic, and nothing importing from `features/`.

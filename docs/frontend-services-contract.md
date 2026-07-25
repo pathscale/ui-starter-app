@@ -3,9 +3,11 @@
 How a backend endpoint reaches a component in a `@pathscale/ui` application built on the
 WebSocket RPC adapter (`@pathscale/wss-adapter`).
 
-**This starter has no backend wiring** — no `api/`, `models/`, `services/` or `hooks/`
-directory yet. This document is the target shape for an app that adds one, so the wiring
-is consistent from the first endpoint rather than reinvented per app.
+**This starter has the directories but no backend wiring** — `api/`, `models/`,
+`services/`, `hooks/`, `stores/`, `constants/` and `utils/` are present, each with a
+README describing what belongs there, and otherwise empty. This document is the shape to
+fill them in, so the wiring is consistent from the first endpoint rather than reinvented
+per app.
 
 It documents the **pattern**, not a list of endpoints. Endpoints live in an app's own
 service contract files and are already machine-readable there; any list here would be
