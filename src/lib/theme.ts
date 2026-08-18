@@ -22,12 +22,23 @@ if (typeof window !== "undefined") {
   document.documentElement.setAttribute("data-theme", initialTheme);
 }
 
-createEffect(() => {
-  const current = theme();
-  if (typeof window !== "undefined") {
-    document.documentElement.setAttribute("data-theme", current);
-    localStorage.setItem("theme", current);
-  }
-});
+/*
+ * Track the theme; write the DOM in the effect argument.
+ *
+ * Solid 2 splits `createEffect` into what to watch and what to do about it,
+ * and a single-argument call is typed `never`. The write also has to stay out
+ * of the tracked phase: a side effect there runs while the computation is
+ * still being tracked, which is how a write that feeds its own read becomes a
+ * loop rather than an error.
+ */
+createEffect(
+  () => theme(),
+  (current) => {
+    if (typeof window !== "undefined") {
+      document.documentElement.setAttribute("data-theme", current);
+      localStorage.setItem("theme", current);
+    }
+  },
+);
 
 export { setTheme, theme };
