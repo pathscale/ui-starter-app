@@ -1,7 +1,8 @@
 import { Button, Flex, Navbar } from "@pathscale/ui";
-import { A, useLocation } from "@solidjs/router";
+import { useLocation } from "@solidjs/router";
 import clsx from "clsx";
 import type { Component } from "solid-js";
+import { Link } from "~/components/Link";
 import Logo from "~/components/Logo";
 import { ROUTES } from "~/config/routes";
 import ThemeToggle from "~/ThemeToggle";
@@ -29,30 +30,30 @@ const AppNavbar: Component = () => {
     <Navbar.Stack sticky class="top-0 z-10">
       <Navbar.Row bordered class="bg-base-100/80 backdrop-blur-md">
         <Navbar.Start>
-          <A href={ROUTES.HOME} class="mr-4 no-underline">
+          <Link href={ROUTES.HOME} class="mr-4 no-underline">
             <Logo />
-          </A>
+          </Link>
           <nav class="flex items-center gap-1">
             {NAV_LINKS.map((link) => (
-              <A href={link.href} class={navLinkClass(link.href)}>
+              <Link href={link.href} class={navLinkClass(link.href)}>
                 {link.label}
-              </A>
+              </Link>
             ))}
           </nav>
         </Navbar.Start>
         <Navbar.End>
           <Flex align="center" gap="sm">
             <ThemeToggle />
-            <A href={ROUTES.LOGIN}>
+            <Link href={ROUTES.LOGIN}>
               <Button variant="ghost" size="sm" type="button">
                 Log in
               </Button>
-            </A>
-            <A href={ROUTES.SIGNUP}>
-              <Button variant="primary" size="sm" type="button">
+            </Link>
+            <Link href={ROUTES.SIGNUP}>
+              <Button variant="solid" flavor="primary" size="sm" type="button">
                 Sign up
               </Button>
-            </A>
+            </Link>
           </Flex>
         </Navbar.End>
       </Navbar.Row>

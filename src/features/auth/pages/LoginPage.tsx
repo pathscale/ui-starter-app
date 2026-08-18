@@ -1,7 +1,7 @@
 import {
   AuthCard,
-  AuthErrorMessage,
   AuthFieldGroup,
+  AuthMessage,
   AuthPoweredBy,
   AuthSubmitButton,
   Flex,
@@ -9,8 +9,8 @@ import {
   Input,
   PasswordField,
 } from "@pathscale/ui";
-import { A } from "@solidjs/router";
 import { type Component, createSignal } from "solid-js";
+import { Link } from "~/components/Link";
 import { ROUTES } from "~/config/routes";
 
 const LoginPage: Component = () => {
@@ -42,7 +42,7 @@ const LoginPage: Component = () => {
                 value={username()}
                 onInput={(e) => setUsername((e.target as HTMLInputElement).value)}
                 autocomplete="username"
-                startIcon={<Icon name="icon-[lucide--user]" width={16} height={16} />}
+                startIcon={<Icon src="icon-[lucide--user]" width={16} height={16} />}
                 class="w-full"
               />
               <PasswordField
@@ -54,9 +54,9 @@ const LoginPage: Component = () => {
                 value={password()}
                 onInput={(v) => setPassword(v)}
                 autocomplete="current-password"
-                startIcon={<Icon name="icon-[lucide--lock]" width={16} height={16} />}
+                startIcon={<Icon src="icon-[lucide--lock]" width={16} height={16} />}
               />
-              <AuthErrorMessage message={error()} />
+              <AuthMessage message={error()} />
               <AuthSubmitButton class="mt-2">Sign in</AuthSubmitButton>
             </AuthFieldGroup>
           </form>
@@ -67,19 +67,19 @@ const LoginPage: Component = () => {
               align="center"
               variant="subtle"
               label="Secure Auth by Honey"
-              logo={<Icon name="icon-[lucide--shield-check]" width={14} height={14} />}
+              logo={<Icon src="icon-[lucide--shield-check]" width={14} height={14} />}
             />
           </div>
         </AuthCard>
 
         <div class="mt-6 text-center text-base-content/70 text-sm">
           <span>Don't have an account? </span>
-          <A
+          <Link
             href={ROUTES.SIGNUP}
             class="text-primary underline-offset-4 hover:text-accent hover:underline"
           >
             Sign up
-          </A>
+          </Link>
         </div>
       </div>
     </Flex>

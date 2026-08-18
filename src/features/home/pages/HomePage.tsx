@@ -1,7 +1,7 @@
 import { Button, Flex } from "@pathscale/ui";
-import { A } from "@solidjs/router";
 import type { Component } from "solid-js";
 import Footer from "~/components/Footer";
+import { Link } from "~/components/Link";
 import { ROUTES } from "~/config/routes";
 
 const HomePage: Component = () => (
@@ -19,16 +19,16 @@ const HomePage: Component = () => (
         shell and auth screens ready to wire to your backend.
       </p>
       <Flex gap="sm" class="mt-2">
-        <A href={ROUTES.SIGNUP}>
-          <Button variant="primary" type="button">
+        <Link href={ROUTES.SIGNUP}>
+          <Button variant="solid" flavor="primary" type="button">
             Get started
           </Button>
-        </A>
-        <A href={ROUTES.LOGIN}>
+        </Link>
+        <Link href={ROUTES.LOGIN}>
           <Button variant="ghost" type="button">
             Log in
           </Button>
-        </A>
+        </Link>
       </Flex>
     </Flex>
     <Footer />

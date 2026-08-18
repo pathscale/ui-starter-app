@@ -1,7 +1,7 @@
 import {
   AuthCard,
-  AuthErrorMessage,
   AuthFieldGroup,
+  AuthMessage,
   AuthPoweredBy,
   AuthSubmitButton,
   Flex,
@@ -9,8 +9,8 @@ import {
   Input,
   PasswordField,
 } from "@pathscale/ui";
-import { A } from "@solidjs/router";
 import { type Component, createSignal } from "solid-js";
+import { Link } from "~/components/Link";
 import { ROUTES } from "~/config/routes";
 
 const SignupPage: Component = () => {
@@ -43,7 +43,7 @@ const SignupPage: Component = () => {
                 value={name()}
                 onInput={(e) => setName((e.target as HTMLInputElement).value)}
                 autocomplete="name"
-                startIcon={<Icon name="icon-[lucide--user]" width={16} height={16} />}
+                startIcon={<Icon src="icon-[lucide--user]" width={16} height={16} />}
                 class="w-full"
               />
               <Input
@@ -54,7 +54,7 @@ const SignupPage: Component = () => {
                 value={email()}
                 onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
                 autocomplete="email"
-                startIcon={<Icon name="icon-[lucide--mail]" width={16} height={16} />}
+                startIcon={<Icon src="icon-[lucide--mail]" width={16} height={16} />}
                 class="w-full"
               />
               <PasswordField
@@ -66,9 +66,9 @@ const SignupPage: Component = () => {
                 value={password()}
                 onInput={(v) => setPassword(v)}
                 autocomplete="new-password"
-                startIcon={<Icon name="icon-[lucide--lock]" width={16} height={16} />}
+                startIcon={<Icon src="icon-[lucide--lock]" width={16} height={16} />}
               />
-              <AuthErrorMessage message={error()} />
+              <AuthMessage message={error()} />
               <AuthSubmitButton class="mt-2">Create account</AuthSubmitButton>
             </AuthFieldGroup>
           </form>
@@ -79,19 +79,19 @@ const SignupPage: Component = () => {
               align="center"
               variant="subtle"
               label="Secure Auth by Honey"
-              logo={<Icon name="icon-[lucide--shield-check]" width={14} height={14} />}
+              logo={<Icon src="icon-[lucide--shield-check]" width={14} height={14} />}
             />
           </div>
         </AuthCard>
 
         <div class="mt-6 text-center text-base-content/70 text-sm">
           <span>Already have an account? </span>
-          <A
+          <Link
             href={ROUTES.LOGIN}
             class="text-primary underline-offset-4 hover:text-accent hover:underline"
           >
             Log in
-          </A>
+          </Link>
         </div>
       </div>
     </Flex>
