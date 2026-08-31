@@ -1,7 +1,6 @@
-import { Button, Flex } from "@pathscale/ui";
+import { Button, Flex, Text } from "@pathscale/ui";
 import type { Component } from "solid-js";
 import Footer from "~/components/Footer";
-import { Link } from "~/components/Link";
 import { ROUTES } from "~/config/routes";
 
 const HomePage: Component = () => (
@@ -13,22 +12,20 @@ const HomePage: Component = () => (
       gap="md"
       class="flex-1 px-4 py-16 text-center"
     >
-      <h1 class="font-bold text-4xl tracking-tight">PathScale Solid.js Starter</h1>
-      <p class="max-w-xl text-base-content/70">
+      <Text family="heading" size="xl" weight="bold" tracking="wide" class="text-4xl">
+        PathScale Solid.js Starter
+      </Text>
+      <Text variant="muted" class="block max-w-xl">
         A modern foundation built on Solid.js and @pathscale/ui — themeable, with a shared navbar
         shell and auth screens ready to wire to your backend.
-      </p>
+      </Text>
       <Flex gap="sm" class="mt-2">
-        <Link href={ROUTES.SIGNUP}>
-          <Button variant="solid" flavor="primary" type="button">
-            Get started
-          </Button>
-        </Link>
-        <Link href={ROUTES.LOGIN}>
-          <Button variant="ghost" type="button">
-            Log in
-          </Button>
-        </Link>
+        <Button href={ROUTES.SIGNUP} variant="solid" flavor="primary">
+          Get started
+        </Button>
+        <Button href={ROUTES.LOGIN} variant="ghost">
+          Log in
+        </Button>
       </Flex>
     </Flex>
     <Footer />

@@ -1,6 +1,5 @@
 import { Button, Flex, Navbar } from "@pathscale/ui";
 import { useLocation } from "@solidjs/router";
-import clsx from "clsx";
 import type { Component } from "solid-js";
 import { Link } from "~/components/Link";
 import Logo from "~/components/Logo";
@@ -20,12 +19,6 @@ const AppNavbar: Component = () => {
       ? location.pathname === ROUTES.HOME
       : location.pathname === path || location.pathname.startsWith(`${path}/`);
 
-  const navLinkClass = (path: string) =>
-    clsx("rounded px-3 py-1.5 font-medium text-sm transition-colors", {
-      "bg-base-200 text-base-content": isActive(path),
-      "text-base-content/70 hover:bg-base-200/60 hover:text-base-content": !isActive(path),
-    });
-
   return (
     <Navbar.Stack sticky class="top-0 z-10">
       <Navbar.Row bordered class="bg-base-100/80 backdrop-blur-md">
@@ -35,25 +28,21 @@ const AppNavbar: Component = () => {
           </Link>
           <nav class="flex items-center gap-1">
             {NAV_LINKS.map((link) => (
-              <Link href={link.href} class={navLinkClass(link.href)}>
+              <Button href={link.href} size="sm" variant={isActive(link.href) ? "soft" : "ghost"}>
                 {link.label}
-              </Link>
+              </Button>
             ))}
           </nav>
         </Navbar.Start>
         <Navbar.End>
           <Flex align="center" gap="sm">
             <ThemeToggle />
-            <Link href={ROUTES.LOGIN}>
-              <Button variant="ghost" size="sm" type="button">
-                Log in
-              </Button>
-            </Link>
-            <Link href={ROUTES.SIGNUP}>
-              <Button variant="solid" flavor="primary" size="sm" type="button">
-                Sign up
-              </Button>
-            </Link>
+            <Button href={ROUTES.LOGIN} variant="ghost" size="sm">
+              Log in
+            </Button>
+            <Button href={ROUTES.SIGNUP} variant="solid" flavor="primary" size="sm">
+              Sign up
+            </Button>
           </Flex>
         </Navbar.End>
       </Navbar.Row>

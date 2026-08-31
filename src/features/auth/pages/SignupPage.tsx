@@ -4,74 +4,88 @@ import {
   AuthMessage,
   AuthPoweredBy,
   AuthSubmitButton,
+  createForm,
   Flex,
+  Form,
+  FormField,
   Icon,
-  Input,
+  Link,
   PasswordField,
+  Text,
+  useField,
 } from "@pathscale/ui";
 import { type Component, createSignal } from "solid-js";
-import { Link } from "~/components/Link";
 import { ROUTES } from "~/config/routes";
 
+/** See `LoginPage` — `PasswordField` joins the form through `useField`. */
+const PasswordFieldControl: Component = () => {
+  const password = useField("password");
+  return (
+    <PasswordField
+      name="password"
+      label="Password"
+      placeholder="Create a password"
+      showLabel="Show password"
+      hideLabel="Hide password"
+      autocomplete="new-password"
+      value={String(password.value() ?? "")}
+      onInput={(value) => password.handleChange(value)}
+      onBlur={password.handleBlur}
+      invalid={password.invalid()}
+      startIcon={<Icon src="icon-[lucide--lock]" width={16} height={16} />}
+    />
+  );
+};
+
 const SignupPage: Component = () => {
-  const [name, setName] = createSignal("");
-  const [email, setEmail] = createSignal("");
-  const [password, setPassword] = createSignal("");
   const [error, setError] = createSignal<string | null>(null);
 
-  const handleSubmit = (e: SubmitEvent) => {
-    e.preventDefault();
-    if (!name().trim() || !email().trim() || !password()) {
-      setError("Fill in all fields to continue.");
-      return;
-    }
-    setError(null);
-    // TODO: call your auth service here.
-  };
+  const form = createForm({
+    defaultValues: { name: "", email: "", password: "" },
+    onSubmit: (values) => {
+      if (!values.name.trim() || !values.email.trim() || !values.password) {
+        setError("Fill in all fields to continue.");
+        return;
+      }
+      setError(null);
+      // TODO: call your auth service here.
+    },
+  });
 
   return (
     <Flex direction="col" align="center" justify="center" class="flex-1">
       <div class="w-full max-w-md">
         <AuthCard title="Create an account" description="Get started in seconds">
-          <form onSubmit={handleSubmit} class="w-full">
+          <Form form={form} class="w-full">
             <AuthFieldGroup gap="md">
-              <Input
-                id="name"
+              <FormField
                 name="name"
                 label="Display name"
-                placeholder="Your name"
-                value={name()}
-                onInput={(e) => setName((e.target as HTMLInputElement).value)}
-                autocomplete="name"
-                startIcon={<Icon src="icon-[lucide--user]" width={16} height={16} />}
-                class="w-full"
+                inputProps={{
+                  id: "name",
+                  placeholder: "Your name",
+                  autocomplete: "name",
+                  fullWidth: true,
+                  startIcon: <Icon src="icon-[lucide--user]" width={16} height={16} />,
+                }}
               />
-              <Input
-                id="email"
+              <FormField
                 name="email"
                 label="Email"
-                placeholder="you@example.com"
-                value={email()}
-                onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
-                autocomplete="email"
-                startIcon={<Icon src="icon-[lucide--mail]" width={16} height={16} />}
-                class="w-full"
+                inputProps={{
+                  id: "email",
+                  type: "email",
+                  placeholder: "you@example.com",
+                  autocomplete: "email",
+                  fullWidth: true,
+                  startIcon: <Icon src="icon-[lucide--mail]" width={16} height={16} />,
+                }}
               />
-              <PasswordField
-                name="password"
-                label="Password"
-                placeholder="Create a password"
-                showLabel="Show password"
-                hideLabel="Hide password"
-                value={password()}
-                onInput={(v) => setPassword(v)}
-                autocomplete="new-password"
-                startIcon={<Icon src="icon-[lucide--lock]" width={16} height={16} />}
-              />
+              <PasswordFieldControl />
               <AuthMessage message={error()} />
               <AuthSubmitButton class="mt-2">Create account</AuthSubmitButton>
             </AuthFieldGroup>
-          </form>
+          </Form>
 
           <div class="mt-4">
             <AuthPoweredBy
@@ -84,15 +98,9 @@ const SignupPage: Component = () => {
           </div>
         </AuthCard>
 
-        <div class="mt-6 text-center text-base-content/70 text-sm">
-          <span>Already have an account? </span>
-          <Link
-            href={ROUTES.LOGIN}
-            class="text-primary underline-offset-4 hover:text-accent hover:underline"
-          >
-            Log in
-          </Link>
-        </div>
+        <Text size="sm" variant="muted" class="mt-6 block text-center">
+          Already have an account? <Link href={ROUTES.LOGIN}>Log in</Link>
+        </Text>
       </div>
     </Flex>
   );
