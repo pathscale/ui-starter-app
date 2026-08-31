@@ -6,7 +6,7 @@
       "name": "solid-starter-kit",
       "dependencies": {
         "@iconify/tailwind4": "^1.0.6",
-        "@pathscale/ui": "^2.11.9",
+        "@pathscale/ui": "^2.11.10",
         "@solidjs/router": "2.0.0-next.19",
         "@solidjs/web": "2.0.0-rc.4",
         "clsx": "^2.1.1",
@@ -217,7 +217,7 @@
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@0.2.12", "", { "dependencies": { "@emnapi/core": "^1.4.3", "@emnapi/runtime": "^1.4.3", "@tybys/wasm-util": "^0.10.0" } }, "sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ=="],
 
-    "@pathscale/ui": ["@pathscale/ui@2.11.9", "", { "dependencies": { "clsx": "^2.1.1", "tailwind-merge": "^3.6.0" }, "peerDependencies": { "@solidjs/web": ">=2.0.0-rc.0", "@standard-schema/spec": "^1.0.0", "popmotion": "^11.0.5", "solid-js": ">=2.0.0-rc.0", "solid-layouts": "^0.2.0" }, "optionalPeers": ["@standard-schema/spec", "popmotion"] }, "sha512-ZDbnhO2T0qjK0VvFZkBkXAKBaGjsaQOQYcYoQCZn1PoPPMipqDqut/ZIIhXbl9bvQSsCvj7rlJ10sqes21zeBw=="],
+    "@pathscale/ui": ["@pathscale/ui@2.11.10", "", { "dependencies": { "clsx": "^2.1.1", "tailwind-merge": "^3.6.0" }, "peerDependencies": { "@solidjs/web": ">=2.0.0-rc.0", "@standard-schema/spec": "^1.0.0", "popmotion": "^11.0.5", "solid-js": ">=2.0.0-rc.0", "solid-layouts": "^0.2.0" }, "optionalPeers": ["@standard-schema/spec", "popmotion"] }, "sha512-3h03mALgWQse1Ebr6CusnYOz/CWGRHIxMcMdM3K7DoBdAq5VKtXdkIF7BQoOlHBnLv/l2grNdaQz2M3oLHpG0A=="],
 
     "@rsbuild/core": ["@rsbuild/core@1.4.7", "", { "dependencies": { "@rspack/core": "1.4.8", "@rspack/lite-tapable": "~1.0.1", "@swc/helpers": "^0.5.17", "core-js": "~3.44.0", "jiti": "^2.4.2" }, "bin": { "rsbuild": "bin/rsbuild.js" } }, "sha512-mYvMYlCKUQAfz7x7GJnD6lBsVBfUSEAfrZLxkDQ0F3w7If9cQpHWLWZWdRmcFFy3Pzns1Edxn0st1nAmcFhRJQ=="],
 
