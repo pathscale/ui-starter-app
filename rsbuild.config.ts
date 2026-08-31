@@ -1,7 +1,7 @@
 import { defineConfig } from "@rsbuild/core";
 import { pluginBabel } from "@rsbuild/plugin-babel";
 import { pluginSolid } from "@rsbuild/plugin-solid";
-import { pluginSolidLayoutsApplication } from "rsbuild-plugin-solid-layouts";
+import { pluginSolid2LayoutsApplication } from "rsbuild-plugin-solid-layouts";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 
 export default defineConfig({
@@ -13,13 +13,13 @@ export default defineConfig({
      * the Layout manifest. Once the Solid transform has run there is no
      * `<Button>` left to resolve - only `_$createComponent` calls.
      */
-    pluginSolidLayoutsApplication({
+    pluginSolid2LayoutsApplication({
       layouts: ["@pathscale/ui"],
     }),
     pluginBabel({
       include: /\.(?:jsx|tsx|ts)$/,
     }),
-    pluginSolid(),
+    pluginSolid({ solidPresetOptions: { moduleName: "@solidjs/web" } }),
   ],
   resolve: {
     alias: {
