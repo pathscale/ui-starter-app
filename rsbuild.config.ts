@@ -1,6 +1,5 @@
 import { defineConfig } from "@rsbuild/core";
 import { pluginBabel } from "@rsbuild/plugin-babel";
-import { pluginSolid } from "@rsbuild/plugin-solid";
 import { pluginSolid2LayoutsApplication } from "rsbuild-plugin-solid-layouts";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 
@@ -16,10 +15,20 @@ export default defineConfig({
     pluginSolid2LayoutsApplication({
       layouts: ["@pathscale/ui"],
     }),
+    /*
+     * `@rsbuild/plugin-solid` is deliberately not used. It injects
+     * `solid-refresh` whenever `dev.hmr` is on, and solid-refresh 0.6.3 halts
+     * Solid 2's reactive system at module-eval time, so the dev server renders
+     * an empty root while the production build is fine. Driving the Solid 2
+     * preset through Babel gives the same compile without it.
+     */
     pluginBabel({
       include: /\.(?:jsx|tsx|ts)$/,
+      babelLoaderOptions: (config) => {
+        config.presets ??= [];
+        config.presets.push(["babel-preset-solid", { moduleName: "@solidjs/web" }]);
+      },
     }),
-    pluginSolid({ solidPresetOptions: { moduleName: "@solidjs/web" } }),
   ],
   resolve: {
     alias: {
@@ -51,6 +60,16 @@ export default defineConfig({
     port: 3000,
   },
   tools: {
+    // rsbuild's own SWC pass also transforms JSX and defaults to Solid 1's
+    // `solid-js/web`. Babel has already produced the Solid 2 output by then,
+    // so point SWC at the same runtime rather than letting it re-emit the old.
+    swc: {
+      jsc: {
+        transform: {
+          react: { runtime: "automatic", importSource: "@solidjs/web" },
+        },
+      },
+    },
     rspack: {
       optimization: {
         splitChunks: false,
