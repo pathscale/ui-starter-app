@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 @source "../node_modules/@pathscale/ui/";
 @plugin "@iconify/tailwind4";
 @import "@pathscale/ui/index.css";
