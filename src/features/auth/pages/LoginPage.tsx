@@ -33,7 +33,7 @@ const PasswordFieldControl: Component = () => {
       hideLabel="Hide password"
       autocomplete="current-password"
       value={String(password.value() ?? "")}
-      onInput={(value) => password.handleChange(value)}
+      onChange={(value) => password.handleChange(value)}
       onBlur={password.handleBlur}
       invalid={password.invalid()}
       startIcon={<Icon src="icon-[lucide--lock]" width={16} height={16} />}
