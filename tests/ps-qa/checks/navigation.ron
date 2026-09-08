@@ -13,6 +13,9 @@
 [
     (
         id: "home-renders",
+        // The bundle boots before this paints, which is a load rather than an
+        // outcome; the default deadline is sized for the second and made this
+        // check flap.
         group: "navigation",
         what: "the home page paints its call to action",
         open: None,
@@ -20,6 +23,7 @@
         click: None,
         subject: "link:Get started",
         expect: Paints,
+        outcome_timeout_ms: 3000,
     ),
     (
         id: "the-dashboard-link-has-a-page",

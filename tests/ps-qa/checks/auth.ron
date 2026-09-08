@@ -1,0 +1,181 @@
+// The two authentication forms this starter ships, driven against the built
+// site through a headless browser.
+//
+// There is no backend here and there is not meant to be: both pages carry a
+// `TODO: call your auth service here` where a real one would go. What they do
+// have is their own refusal, and that is the part a person copying this
+// template inherits -- so it is the part worth guarding. A starter whose form
+// silently accepts an empty submission teaches every application built from it
+// to do the same.
+//
+// The group runs in sequence against one host. A field filled by one check is
+// still filled for the next, which is what lets the refusal be shown to
+// survive a username and then go when the password arrives.
+[
+    (
+        id: "the-login-form-is-reachable",
+        group: "auth",
+        what: "the header's Log in reaches a form that says what it is for",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "heading:Welcome back",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-login-form-asks-for-both-credentials",
+        group: "auth",
+        what: "a username and a password field are drawn, not merely declared",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "textbox:Password",
+        expect: Paints,
+    ),
+    (
+        id: "the-password-can-be-revealed",
+        group: "auth",
+        what: "the reveal control swaps to its opposite, so it is not a dead end",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Show password"),
+        subject: "button:Hide password",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-it-can-be-hidden-again",
+        group: "auth",
+        what: "revealing is reversible",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Hide password"),
+        subject: "button:Show password",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "an-empty-sign-in-is-refused",
+        group: "auth",
+        what: "submitting nothing produces a message rather than silence",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Sign in"),
+        subject: "Enter your username and password.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-username-field-takes-a-value",
+        group: "auth",
+        what: "the username field accepts what is typed into it",
+        // Measured separately from the submission on purpose. A refusal that
+        // will not clear has two explanations -- the form ignoring a field, or
+        // the field never taking the value -- and a check that only submits
+        // cannot tell them apart.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        type_into: Some("Username"),
+        text: Some("someone"),
+        subject: "textbox:Username",
+        expect: ValueChanges,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-password-field-takes-a-value",
+        group: "auth",
+        what: "the password field accepts what is typed into it",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        type_into: Some("Password"),
+        text: Some("not-a-real-password"),
+        subject: "textbox:Password",
+        expect: ValueChanges,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-refusal-goes-when-both-are-given",
+        group: "auth",
+        what: "the message clears once the form has what it asked for",
+        // FAILING, and correctly so. Both fields hold what was typed -- a
+        // snapshot taken at the moment of the refusal reads value=abcde on
+        // each -- the submit button is enabled, and the form still says the
+        // credentials are missing. Real keystrokes and a driven value behave
+        // identically, so it is not the harness. The check stays red until
+        // the form accepts what the person in front of it can see.
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Sign in"),
+        subject: "Enter your username and password.",
+        expect: Absent,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-signup-form-is-reachable",
+        group: "auth",
+        what: "the header's Sign up reaches a form that says what it is for",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "heading:Create an account",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "an-empty-signup-is-refused",
+        group: "auth",
+        what: "submitting nothing produces a message rather than silence",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Create account"),
+        subject: "Fill in all fields to continue.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "two-of-three-fields-are-not-enough",
+        group: "auth",
+        what: "the refusal counts every field, not the first one filled",
+        open: Some("Sign up"),
+        hover: None,
+        setup_type_into: Some("Display name"),
+        setup_text: Some("Someone"),
+        click: Some("Create account"),
+        subject: "Fill in all fields to continue.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-two-of-three-are-still-not-enough",
+        group: "auth",
+        what: "a second field filled does not satisfy a form that wants three",
+        open: Some("Sign up"),
+        hover: None,
+        setup_type_into: Some("Email"),
+        setup_text: Some("someone@example.com"),
+        click: Some("Create account"),
+        subject: "Fill in all fields to continue.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "a-complete-signup-clears-the-refusal",
+        group: "auth",
+        what: "the refusal goes when every field the form asked for is filled",
+        // FAILING, with the same shape as the login form above: all three
+        // fields hold what was typed and the form still says they are
+        // missing. Two pages, two forms, one behaviour, so the fault is in
+        // what they share rather than in either page.
+        open: Some("Sign up"),
+        hover: None,
+        setup_type_into: Some("Password"),
+        setup_text: Some("not-a-real-password"),
+        click: Some("Create account"),
+        subject: "Fill in all fields to continue.",
+        expect: Absent,
+        outcome_timeout_ms: 3000,
+    ),
+]

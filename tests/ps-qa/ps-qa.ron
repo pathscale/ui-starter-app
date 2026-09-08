@@ -3,10 +3,23 @@
 // Every surface names a `marker` -- a control that exists only there. Without
 // one the harness answers "already here" for every surface, so a check's
 // navigation step presses nothing and then fails on a control one press away.
+//
+// A marker has to be absent from the page being left, not merely present on
+// the page being reached: "Sign up" is in the header of every page, so it
+// proves nothing about having arrived at the signup form.
 AppProfile(
     surfaces: [
+        (name: "home", opener: "Home", marker: Some("Get started")),
         (name: "dashboard", opener: "Dashboard", marker: Some("Next steps")),
+        (name: "login", opener: "Log in", marker: Some("Welcome back")),
+        (name: "signup", opener: "Sign up", marker: Some("Create an account")),
     ],
     navigation_controls: ["Home", "Dashboard", "Log in", "Sign up"],
     home_opener: Some("Home"),
+    // The template's attribution, which points at the product this starter
+    // authenticates against. Following it would make a run depend on
+    // honey.id being up rather than on this application.
+    manual_controls: [
+        (label: "Secure Auth by Honey", command: "honey.id"),
+    ],
 )
