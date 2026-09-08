@@ -1,0 +1,44 @@
+// The navbar, driven against the built site through a headless browser.
+//
+// The defect: the Dashboard link pointed at a route with no component, so
+// pressing it left the navbar standing and rendered an empty `#root`. Nothing
+// in the starter noticed, and a starter whose own navigation is broken teaches
+// that shape to everything built from it.
+//
+// `heading:Dashboard` rather than a node count, because a count passes on any
+// page that renders something. The page title is what the route exists to
+// show, and it had to be made a heading before it could be asked for: `Text`
+// renders a span, so the title was styled like a heading and was one to
+// nothing that reads the page.
+[
+    (
+        id: "home-renders",
+        group: "navigation",
+        what: "the home page paints its call to action",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "link:Get started",
+        expect: Paints,
+    ),
+    (
+        id: "the-dashboard-link-has-a-page",
+        group: "navigation",
+        what: "the Dashboard link reaches a page rather than an empty root",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "heading:Dashboard",
+        expect: Present,
+    ),
+    (
+        id: "the-navbar-survives-the-route",
+        group: "navigation",
+        what: "the navigation is still there once the route has changed",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "link:Home",
+        expect: Paints,
+    ),
+]

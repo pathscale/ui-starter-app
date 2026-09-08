@@ -18,7 +18,22 @@ const DashboardPage: Component = () => (
   <Flex direction="col" class="flex-1">
     <Flex direction="col" gap="lg" class="mx-auto w-full max-w-3xl flex-1 px-4 py-16">
       <Flex direction="col" gap="sm">
-        <Text family="heading" size="xl" weight="bold" tracking="wide" class="text-3xl">
+        {/*
+          A heading in the accessibility tree, not only in the type scale.
+          `Text` renders a span, so `family="heading"` styles the title and
+          leaves the page with no heading structure at all: a screen reader
+          finds nothing to navigate by, and neither does anything else that
+          reads the page.
+        */}
+        <Text
+          family="heading"
+          size="xl"
+          weight="bold"
+          tracking="wide"
+          class="text-3xl"
+          role="heading"
+          aria-level="1"
+        >
           Dashboard
         </Text>
         <Text variant="muted" class="block">
@@ -28,7 +43,10 @@ const DashboardPage: Component = () => (
 
       <Card elevation="md">
         <Card.Body class="gap-2">
-          <Text weight="semibold">Next steps</Text>
+          {/* A section title, and therefore a heading. */}
+          <Text weight="semibold" role="heading" aria-level="2">
+            Next steps
+          </Text>
           <Text variant="muted" size="sm" class="block">
             Wire the auth screens to your backend, then guard this route so it is reachable only
             once a session exists.

@@ -1,0 +1,12 @@
+// What the harness has to be told about this application.
+//
+// Every surface names a `marker` -- a control that exists only there. Without
+// one the harness answers "already here" for every surface, so a check's
+// navigation step presses nothing and then fails on a control one press away.
+AppProfile(
+    surfaces: [
+        (name: "dashboard", opener: "Dashboard", marker: Some("Next steps")),
+    ],
+    navigation_controls: ["Home", "Dashboard", "Log in", "Sign up"],
+    home_opener: Some("Home"),
+)
