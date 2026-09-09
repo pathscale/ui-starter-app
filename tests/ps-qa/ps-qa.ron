@@ -7,12 +7,27 @@
 // A marker has to be absent from the page being left, not merely present on
 // the page being reached: "Sign up" is in the header of every page, so it
 // proves nothing about having arrived at the signup form.
+//
+// It also has to have a *box*. Arrival is judged by finding a node whose name
+// carries the marker and whose width and height are both above zero, and CI's
+// host is built with no font catalogue: text there shapes to no glyphs, so a
+// heading lays out at its line width and zero height. Both auth forms were
+// named by their titles -- "Welcome back" and "Create an account" -- and both
+// surfaces were therefore unreachable on that host. Not one check on either
+// page ran; they reported "could not open: no visible, enabled, sized semantic
+// control matching it", which reads as a missing link rather than as an
+// unmeasurable marker. So each form is named by a field instead. A field is
+// padded and bordered whether or not a glyph shapes, and "Username" and
+// "Display name" each name exactly one node in this application.
 AppProfile(
     surfaces: [
         (name: "home", opener: "Home", marker: Some("Get started")),
+        // The dashboard is all text, so its marker is the card's `role="region"`
+        // whose `aria-label` repeats its title. See `DashboardPage`: the region
+        // exists so that this page has something with a box to be recognised by.
         (name: "dashboard", opener: "Dashboard", marker: Some("Next steps")),
-        (name: "login", opener: "Log in", marker: Some("Welcome back")),
-        (name: "signup", opener: "Sign up", marker: Some("Create an account")),
+        (name: "login", opener: "Log in", marker: Some("Username")),
+        (name: "signup", opener: "Sign up", marker: Some("Display name")),
     ],
     navigation_controls: ["Home", "Dashboard", "Log in", "Sign up"],
     home_opener: Some("Home"),
