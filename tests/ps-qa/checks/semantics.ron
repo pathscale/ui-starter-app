@@ -19,6 +19,14 @@
 // because the audit matches names and roles by substring: `heading` reads as
 // "every heading on this surface". They sample the theme the application
 // starts in; `theme.ron` repeats them in the other one.
+//
+// The audit needs a box, not a glyph: it reads the colours the renderer
+// resolved rather than the pixels it committed, and it skips any node laid out
+// at zero height. That is why the contrast checks over `link`, `button` and
+// `textbox` are here and the two over `heading` are not. A heading's box is
+// exactly its shaped glyphs, so on CI's fontless host `heading` selects
+// nothing and the check fails for selecting nothing rather than for finding a
+// defect. Both live in `tests/ps-qa/checks-fonts`, unchanged.
 [
     // ------------------------------------------------------- the home page
     (
@@ -81,16 +89,6 @@
         outcome_timeout_ms: 3000,
     ),
     (
-        id: "the-landing-headings-are-readable",
-        group: "semantics",
-        what: "the title meets the contrast floor against what is actually behind it",
-        open: Some("Home"),
-        hover: None,
-        click: None,
-        subject: "heading",
-        expect: Contrast,
-    ),
-    (
         id: "the-landing-links-are-readable",
         group: "semantics",
         what: "every link on the landing page meets its contrast floor",
@@ -141,16 +139,6 @@
         subject: "heading:",
         expect: Count,
         expect_count: Some(2),
-    ),
-    (
-        id: "the-dashboard-headings-are-readable",
-        group: "semantics",
-        what: "both headings meet the contrast floor",
-        open: Some("Dashboard"),
-        hover: None,
-        click: None,
-        subject: "heading",
-        expect: Contrast,
     ),
     (
         id: "the-dashboard-links-are-readable",

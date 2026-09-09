@@ -13,6 +13,17 @@
 // difference would be a surprise. A surprise nothing asks about is a
 // surprise nobody finds.
 //
+// Twenty-two of them run here, not twenty-four. On the login page the words
+// "Sign up" name two nodes -- the header's link and the card's own footer
+// link -- and on the signup page "Log in" does the same. A `Paints` assertion
+// covers the whole family, and the card's link is a bare inline anchor whose
+// box is exactly its shaped glyphs, so it has none at all on CI's fontless
+// host and the assertion fails for a reason that is about the runner. Weakening
+// them to a count would ask nothing about the header, which is what this file
+// is for, so both are in `tests/ps-qa/checks-fonts` as they were written.
+// `navigation.ron` counts the same two pairs here, and that count is the check
+// that the card carries its own cross-link at all.
+//
 // Not covered, because it cannot be: the footer has no accessible name and no
 // landmark role, so no selector reaches it. `find --role contentinfo` returns
 // nothing on any surface, and neither does `@footer`. A footer that nothing
@@ -211,16 +222,6 @@
         expect: Paints,
     ),
     (
-        id: "the-header-draws-sign-up-on-the-login-page",
-        group: "chrome",
-        what: "the Sign up link is drawn on the login page",
-        open: Some("Log in"),
-        hover: None,
-        click: None,
-        subject: "link:Sign up",
-        expect: Paints,
-    ),
-    (
         id: "the-header-draws-the-theme-control-on-the-login-page",
         group: "chrome",
         what: "the theme control is drawn on the login page",
@@ -262,16 +263,6 @@
         hover: None,
         click: None,
         subject: "link:Dashboard",
-        expect: Paints,
-    ),
-    (
-        id: "the-header-draws-log-in-on-the-signup-page",
-        group: "chrome",
-        what: "the Log in link is drawn on the signup page",
-        open: Some("Sign up"),
-        hover: None,
-        click: None,
-        subject: "link:Log in",
         expect: Paints,
     ),
     (

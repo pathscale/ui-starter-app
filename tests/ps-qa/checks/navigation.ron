@@ -16,7 +16,18 @@
 // would be pressing a control that is not there and would say so.
 //
 // The page a transition reaches is identified by its heading, not by a node
-// count: a count passes on any page that renders anything at all.
+// count: a count passes on any page that renders anything at all. `Present` is
+// the right question for a heading and the only one available: its box is
+// exactly its shaped glyphs, so on CI's fontless host it is laid out and
+// measures nothing, and asking it to paint would fail on every transition
+// while every transition worked.
+//
+// The same is true of the two cards' own cross-links, which are bare inline
+// anchors and have no box at all there. Each pair is counted below, which is
+// font-independent and is the assertion that the card carries a link of its
+// own beside the header's. The pair of `DistinctPositions` checks that said
+// the two are not drawn on top of each other needs both ends to have a
+// position, so those are in `tests/ps-qa/checks-fonts`.
 [
     // -------------------------------------------------------- from the home
     (
@@ -221,16 +232,6 @@
         expect_count: Some(2),
     ),
     (
-        id: "and-the-two-sign-up-links-are-not-stacked",
-        group: "navigation",
-        what: "both are somewhere a person could press",
-        open: Some("Log in"),
-        hover: None,
-        click: None,
-        subject: "link:Sign up",
-        expect: DistinctPositions,
-    ),
-    (
         id: "the-logo-goes-home-from-the-login-page",
         group: "navigation",
         what: "the header logo is a link home from the login page too",
@@ -285,16 +286,6 @@
         subject: "link:Log in",
         expect: Count,
         expect_count: Some(2),
-    ),
-    (
-        id: "and-the-signup-page-log-in-links-are-not-stacked",
-        group: "navigation",
-        what: "both are somewhere a person could press",
-        open: Some("Sign up"),
-        hover: None,
-        click: None,
-        subject: "link:Log in",
-        expect: DistinctPositions,
     ),
     (
         id: "the-logo-goes-home-from-the-signup-page",

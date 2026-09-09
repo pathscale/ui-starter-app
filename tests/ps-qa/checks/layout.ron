@@ -13,29 +13,32 @@
 // The numbers are minimums, not exact matches, except where an exact one is
 // the point. A minimum fails on the regression that matters -- a control
 // collapsing -- without failing every time a font metric moves by a pixel.
+//
+// Both ends of a relation have to have a box, which is what decides which
+// nodes may stand for a region here. A heading's box is exactly its shaped
+// glyphs, so on CI's fontless host the landing title lays out at 0x0 and a
+// comparison against it asks nothing that can be answered. The padded controls
+// in the same region -- the hero's own call to action, a field, a card -- keep
+// their boxes with or without a font catalogue, and they are the boxes the
+// layout actually places, so naming them is the stronger question as well as
+// the portable one. `tests/ps-qa/checks-fonts` holds the one comparison here
+// that genuinely needs a glyph.
 [
     // ------------------------------------------------------- the home page
     (
-        id: "the-header-draws-above-the-landing-heading",
+        id: "the-header-draws-above-the-landing-hero",
         group: "layout",
         what: "the header is at the top of the page, not somewhere in it",
         // Rendered order, not DOM order. A sticky header that lost its
         // positioning is still the first child of the document.
+        //
+        // The hero is represented by its call to action rather than by its
+        // title: the button is the box the centred column actually places, and
+        // it has one on a host with no fonts.
         open: Some("Home"),
         hover: None,
         click: None,
         subject: "link:Home",
-        compare: Some("heading:PathScale Solid.js Starter"),
-        expect: Above,
-    ),
-    (
-        id: "the-landing-heading-draws-above-its-call-to-action",
-        group: "layout",
-        what: "the hero reads in the order it was written",
-        open: Some("Home"),
-        hover: None,
-        click: None,
-        subject: "heading:PathScale Solid.js Starter",
         compare: Some("link:Get started"),
         expect: Above,
     ),
@@ -106,38 +109,23 @@
     ),
     // ------------------------------------------------------- the dashboard
     (
-        id: "the-header-draws-above-the-dashboard-heading",
+        id: "the-header-draws-above-the-dashboard-card",
         group: "layout",
         what: "the header is at the top of the dashboard too",
+        // `@card` rather than the page title, for the same reason the landing
+        // page's check names the hero's button, and it is the same pair of
+        // nodes the login and signup checks below use.
         open: Some("Dashboard"),
         hover: None,
         click: None,
         subject: "link:Home",
-        compare: Some("heading:Dashboard"),
-        expect: Above,
-    ),
-    (
-        id: "the-dashboard-heading-draws-above-its-section",
-        group: "layout",
-        what: "the page title comes before the card it introduces",
-        open: Some("Dashboard"),
-        hover: None,
-        click: None,
-        subject: "heading:Dashboard",
-        compare: Some("heading:Next steps"),
-        expect: Above,
-    ),
-    (
-        id: "the-dashboard-section-heading-is-inside-its-card",
-        group: "layout",
-        what: "the card contains what it is supposed to contain",
-        open: Some("Dashboard"),
-        hover: None,
-        click: None,
-        subject: "heading:Next steps",
         compare: Some("@card"),
-        expect: ContainedBy,
+        expect: Above,
     ),
+    // The two other questions this page raised -- the title above the card,
+    // and the section heading inside it -- have a heading at one end and
+    // nowhere else to move it to, since the card is the only thing on this
+    // page with a box of its own. Both are in `tests/ps-qa/checks-fonts`.
     // ------------------------------------------------------- the login page
     (
         id: "the-header-draws-above-the-login-card",
