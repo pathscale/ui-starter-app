@@ -21,7 +21,10 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
   conventions, and a context-efficient workflow. Reading it first keeps
   context small and avoids re-deriving patterns that already exist.
 - **`npm run typecheck` must pass.** It is the type gate for this repo; a build succeeding is not the same as types being sound.
-- **`npm` is the package manager** — its lockfile is authoritative. Don't introduce a second one by running npm/yarn/pnpm here.
+- **`npm` is the package manager.** Do not introduce a second one by running
+  another package manager here. Its lockfile is not committed: dependencies
+  are caret ranges, and a committed lock holds them still, because a recorded
+  version keeps satisfying its range and nothing is ever reconsidered.
 - **Docs describe what is true now.** If you change behaviour, update the README and any affected doc in the same change.
 
 ## Build & run
