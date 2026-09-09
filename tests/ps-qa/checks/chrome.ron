@@ -1,0 +1,300 @@
+// The header, on every route that draws it.
+//
+// `navigation.ron` presses these controls and proves they arrive somewhere.
+// That is not the same question as whether they are all drawn on every page:
+// a header that loses a control on one route still passes every transition
+// written from the routes that keep it, because a transition is only ever
+// asserted from pages the control still exists on.
+//
+// So this group opens each of the four routes in turn and asks for all six
+// header controls by name. Six times four is twenty-four checks that look
+// repetitive on the page and are not: the shell is mounted once above the
+// router, and the reason to write them out is precisely that a per-route
+// difference would be a surprise. A surprise nothing asks about is a
+// surprise nobody finds.
+//
+// Not covered, because it cannot be: the footer has no accessible name and no
+// landmark role, so no selector reaches it. `find --role contentinfo` returns
+// nothing on any surface, and neither does `@footer`. A footer that nothing
+// can name is a footer no assistive technology announces, and it is also one
+// no check can guard. The two auth pages do not draw it at all, which is a
+// choice `AuthLayout` makes rather than an accident.
+[
+    // ------------------------------------------------------------- the home
+    (
+        id: "the-header-draws-the-logo-on-the-landing-page",
+        group: "chrome",
+        what: "the brand mark is drawn on the landing page",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:PathScale",
+        expect: Paints,
+    ),
+    (
+        id: "the-logo-mark-is-not-an-empty-box",
+        group: "chrome",
+        what: "the logo actually rasterises rather than laying out and drawing nothing",
+        // An inline SVG lays out with a correct box and a correct stroke
+        // colour while referencing a sprite that resolved to nothing. The
+        // semantic tree reports it as fine; the screen shows an empty
+        // rectangle. Raster ink is the only observable that separates them,
+        // and this is a mark drawn from a single inline path -- exactly the
+        // shape that fails that way.
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:PathScale",
+        expect: VisibleInk,
+    ),
+    (
+        id: "the-header-draws-home-on-the-landing-page",
+        group: "chrome",
+        what: "the Home link is drawn on the landing page",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:Home",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-dashboard-on-the-landing-page",
+        group: "chrome",
+        what: "the Dashboard link is drawn on the landing page",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:Dashboard",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-log-in-on-the-landing-page",
+        group: "chrome",
+        what: "the Log in link is drawn on the landing page",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:Log in",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-sign-up-on-the-landing-page",
+        group: "chrome",
+        what: "the Sign up link is drawn on the landing page",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:Sign up",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-the-theme-control-on-the-landing-page",
+        group: "chrome",
+        what: "the theme control is drawn on the landing page",
+        // The control names itself for what it will do rather than for what is
+        // on, so its name depends on the current theme and a bare assertion
+        // would depend on whatever ran before it. The preparation puts the
+        // theme in a known state and skips itself when it is already there,
+        // so this check means the same thing run alone and run last.
+        open: Some("Home"),
+        hover: None,
+        prepare: Some("Switch to dark mode"),
+        prepare_unless: Some("button:Switch to light mode"),
+        click: None,
+        subject: "button:Switch to light mode",
+        expect: Paints,
+        outcome_timeout_ms: 3000,
+    ),
+    // -------------------------------------------------------- the dashboard
+    (
+        id: "the-header-draws-the-logo-on-the-dashboard",
+        group: "chrome",
+        what: "the brand mark is drawn on the dashboard",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "link:PathScale",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-home-on-the-dashboard",
+        group: "chrome",
+        what: "the Home link is drawn on the dashboard",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "link:Home",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-dashboard-on-the-dashboard",
+        group: "chrome",
+        what: "the Dashboard link is drawn on the page it points at",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "link:Dashboard",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-log-in-on-the-dashboard",
+        group: "chrome",
+        what: "the Log in link is drawn on the dashboard",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "link:Log in",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-sign-up-on-the-dashboard",
+        group: "chrome",
+        what: "the Sign up link is drawn on the dashboard",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "link:Sign up",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-the-theme-control-on-the-dashboard",
+        group: "chrome",
+        what: "the theme control is drawn on the dashboard",
+        open: Some("Dashboard"),
+        hover: None,
+        prepare: Some("Switch to dark mode"),
+        prepare_unless: Some("button:Switch to light mode"),
+        click: None,
+        subject: "button:Switch to light mode",
+        expect: Paints,
+        outcome_timeout_ms: 3000,
+    ),
+    // ------------------------------------------------------- the login page
+    (
+        id: "the-header-draws-the-logo-on-the-login-page",
+        group: "chrome",
+        what: "the brand mark is drawn on the login page",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:PathScale",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-home-on-the-login-page",
+        group: "chrome",
+        what: "the Home link is drawn on the login page",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:Home",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-dashboard-on-the-login-page",
+        group: "chrome",
+        what: "the Dashboard link is drawn on the login page",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:Dashboard",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-log-in-on-the-login-page",
+        group: "chrome",
+        what: "the Log in link is drawn on the page it points at",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:Log in",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-sign-up-on-the-login-page",
+        group: "chrome",
+        what: "the Sign up link is drawn on the login page",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:Sign up",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-the-theme-control-on-the-login-page",
+        group: "chrome",
+        what: "the theme control is drawn on the login page",
+        open: Some("Log in"),
+        hover: None,
+        prepare: Some("Switch to dark mode"),
+        prepare_unless: Some("button:Switch to light mode"),
+        click: None,
+        subject: "button:Switch to light mode",
+        expect: Paints,
+        outcome_timeout_ms: 3000,
+    ),
+    // ------------------------------------------------------ the signup page
+    (
+        id: "the-header-draws-the-logo-on-the-signup-page",
+        group: "chrome",
+        what: "the brand mark is drawn on the signup page",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:PathScale",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-home-on-the-signup-page",
+        group: "chrome",
+        what: "the Home link is drawn on the signup page",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:Home",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-dashboard-on-the-signup-page",
+        group: "chrome",
+        what: "the Dashboard link is drawn on the signup page",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:Dashboard",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-log-in-on-the-signup-page",
+        group: "chrome",
+        what: "the Log in link is drawn on the signup page",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:Log in",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-sign-up-on-the-signup-page",
+        group: "chrome",
+        what: "the Sign up link is drawn on the page it points at",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:Sign up",
+        expect: Paints,
+    ),
+    (
+        id: "the-header-draws-the-theme-control-on-the-signup-page",
+        group: "chrome",
+        what: "the theme control is drawn on the signup page",
+        open: Some("Sign up"),
+        hover: None,
+        prepare: Some("Switch to dark mode"),
+        prepare_unless: Some("button:Switch to light mode"),
+        click: None,
+        subject: "button:Switch to light mode",
+        expect: Paints,
+        outcome_timeout_ms: 3000,
+    ),
+]
