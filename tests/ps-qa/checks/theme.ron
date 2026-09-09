@@ -51,6 +51,15 @@
 //
 // Written down rather than asserted, because an assertion here would be red
 // on every run and this is not a change these files can make.
+//
+// The dashboard's audit is the one that is not here. It addressed `heading`,
+// and a heading has no box on a host with no font catalogue, so the audit
+// selects nothing there and fails for selecting nothing. It is in
+// `tests/ps-qa/checks-fonts` with its own switch into the light theme, since
+// that directory is a group of its own and inherits nothing from this file.
+// The three contrast checks that remain -- two over `textbox`, one over
+// `link` -- audit nodes that are padded and bordered whether or not a glyph
+// shapes, and the last of them is still the check the light palette fails.
 [
     (
         id: "pressing-the-theme-toggle-changes-the-theme",
@@ -115,16 +124,6 @@
         subject: "button:Switch to dark mode",
         expect: Paints,
         outcome_timeout_ms: 3000,
-    ),
-    (
-        id: "and-the-dashboard-is-readable-in-the-light-theme",
-        group: "theme",
-        what: "the dashboard's headings meet their contrast floor in the other palette",
-        open: None,
-        hover: None,
-        click: None,
-        subject: "heading",
-        expect: Contrast,
     ),
     (
         id: "the-theme-survives-a-route-change-to-the-login-page",
