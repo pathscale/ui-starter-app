@@ -41,7 +41,20 @@ const DashboardPage: Component = () => (
         </Text>
       </Flex>
 
-      <Card elevation="md">
+      {/*
+        A named region, so the card is announced as the section its title says
+        it is rather than as an unlabelled group of text. `aria-labelledby`
+        would be the idiomatic form and does not work here: the engine's name
+        computation does not follow it, so the region comes back unnamed.
+
+        It is also the only thing on this page that is not text. Every other
+        node the dashboard owns is a heading or a paragraph, and text has no
+        box on a host with no font catalogue -- which is what CI runs -- so
+        without this the page has nothing that says "you are on the dashboard"
+        to anything measuring boxes. `tests/ps-qa/ps-qa.ron` names it as this
+        surface's marker for that reason.
+      */}
+      <Card elevation="md" role="region" aria-label="Next steps">
         <Card.Body class="gap-2">
           {/* A section title, and therefore a heading. */}
           <Text weight="semibold" role="heading" aria-level="2">
