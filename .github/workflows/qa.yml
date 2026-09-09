@@ -13,6 +13,14 @@
 # of it. Each one gets its own host, so a group cannot inherit the page or
 # the theme another left behind, and a group that kills the host -- which is
 # a thing the engine can be made to do -- does not take the rest with it.
+#
+# The host is built without `system-fonts`, so text here shapes to no glyphs and
+# nothing that needs one can be asked of it: a heading lays out at its line
+# width and zero height, and a bare inline anchor gets no box at all.
+# `tests/ps-qa/checks-fonts` holds the questions that need a font stack --
+# contrast over headings, and rendered order or containment with a heading at
+# one end -- and is deliberately not run here. Its own file says how to run it
+# against a fonts-enabled host.
 name: QA
 
 on:
