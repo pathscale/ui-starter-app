@@ -1,24 +1,37 @@
-// The navbar, driven against the built site through a headless browser.
+// Every way this starter lets a person move between its four routes, driven
+// against the built site through a headless browser.
 //
-// The defect: the Dashboard link pointed at a route with no component, so
-// pressing it left the navbar standing and rendered an empty `#root`. Nothing
-// in the starter noticed, and a starter whose own navigation is broken teaches
-// that shape to everything built from it.
+// The defect this group started as: the Dashboard link pointed at a route with
+// no component, so pressing it left the navbar standing and rendered an empty
+// `#root`. Nothing in the starter noticed, and a starter whose own navigation
+// is broken teaches that shape to everything built from it.
 //
-// `heading:Dashboard` rather than a node count, because a count passes on any
-// page that renders something. The page title is what the route exists to
-// show, and it had to be made a heading before it could be asked for: `Text`
-// renders a span, so the title was styled like a heading and was one to
-// nothing that reads the page.
+// One check per transition rather than one per page. A page that renders when
+// you open it directly says nothing about whether the control that is supposed
+// to reach it does, and it was a control -- not a page -- that was broken.
+// Four routes each carry links to the other three, plus the logo and the two
+// calls to action on the landing page, so there are sixteen of them and they
+// are all written out. `open` names where the transition starts and `click`
+// names the control pressed, so a check that silently began on the wrong page
+// would be pressing a control that is not there and would say so.
+//
+// The page a transition reaches is identified by its heading, not by a node
+// count: a count passes on any page that renders anything at all.
 [
+    // -------------------------------------------------------- from the home
     (
         id: "home-renders",
+        group: "navigation",
+        what: "the home page paints its call to action",
+        // `open` rather than nothing. Checks are bucketed by the surface they
+        // name and this one used to name none, so it inherited whichever
+        // surface the previous file left behind and measured the home page
+        // while standing on the dashboard.
+        //
         // The bundle boots before this paints, which is a load rather than an
         // outcome; the default deadline is sized for the second and made this
         // check flap.
-        group: "navigation",
-        what: "the home page paints its call to action",
-        open: None,
+        open: Some("Home"),
         hover: None,
         click: None,
         subject: "link:Get started",
@@ -29,51 +42,269 @@
         id: "the-dashboard-link-has-a-page",
         group: "navigation",
         what: "the Dashboard link reaches a page rather than an empty root",
-        open: Some("Dashboard"),
+        open: Some("Home"),
         hover: None,
-        click: None,
+        click: Some("Dashboard"),
         subject: "heading:Dashboard",
         expect: Present,
+        outcome_timeout_ms: 3000,
     ),
     (
         id: "the-navbar-survives-the-route",
         group: "navigation",
         what: "the navigation is still there once the route has changed",
-        open: None,
+        open: Some("Home"),
         hover: None,
-        click: None,
+        click: Some("Dashboard"),
         subject: "link:Home",
         expect: Paints,
+        outcome_timeout_ms: 3000,
     ),
-    // Nothing above this line presses anything, and a page that only paints
-    // cannot tell you whether the application is alive. Solid 2 halts the
-    // reactive system permanently when an error escapes every boundary, and a
-    // halted page still paints: it renders once, then answers nothing. Two
-    // sites in this fleet were shipping in exactly that state and every
-    // render-only check passed over them.
-    //
-    // The theme control is the cheapest detector there is. Its own label is
-    // derived from state, so pressing it and reading the label back asks
-    // whether state still moves, with no knowledge of what the page is for.
     (
-        id: "pressing-the-theme-toggle-changes-the-theme",
+        id: "the-header-log-in-reaches-the-login-page-from-home",
         group: "navigation",
-        what: "the control offers the opposite theme once it has been used",
-        open: None,
+        what: "the header's Log in works from the landing page",
+        open: Some("Home"),
         hover: None,
-        click: Some("Switch to light mode"),
-        subject: "button:Switch to dark mode",
+        click: Some("Log in"),
+        subject: "heading:Welcome back",
         expect: Present,
-        outcome_timeout_ms: 8000,
+        outcome_timeout_ms: 3000,
     ),
     (
-        id: "and-the-old-label-is-gone",
+        id: "the-header-sign-up-reaches-the-signup-page-from-home",
         group: "navigation",
-        what: "the toggle re-rendered rather than gaining a second label",
-        open: None,
+        what: "the header's Sign up works from the landing page",
+        open: Some("Home"),
+        hover: None,
+        click: Some("Sign up"),
+        subject: "heading:Create an account",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "get-started-reaches-the-signup-form",
+        group: "navigation",
+        what: "the landing page's primary call to action goes where it says",
+        // The one control on this site whose destination cannot be guessed
+        // from its label, and the one a visitor is most likely to press.
+        open: Some("Home"),
+        hover: None,
+        click: Some("Get started"),
+        subject: "heading:Create an account",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-landing-page-offers-log-in-twice",
+        group: "navigation",
+        what: "the hero's Log in is drawn as well as the header's",
+        // The hero's second call to action shares its label with the header's,
+        // so no check can press it in particular: whichever the harness
+        // resolves first, both land on the same page and the transition proves
+        // nothing about which one was used. Counting them is the honest
+        // question, and it is the one that fails if the hero pair collapses to
+        // a single button.
+        open: Some("Home"),
         hover: None,
         click: None,
-        subject: "button:Switch to light mode",
-        expect: Absent,
+        subject: "link:Log in",
+        expect: Count,
+        expect_count: Some(2),
+    ),
+    (
+        id: "and-the-two-log-in-links-are-not-stacked",
+        group: "navigation",
+        what: "both are somewhere a person could press",
+        // Two nodes with the same name and the same coordinates is what a
+        // duplicated render looks like, and it satisfies a count.
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:Log in",
+        expect: DistinctPositions,
+    ),
+    // --------------------------------------------------- from the dashboard
+    (
+        id: "the-header-home-reaches-the-landing-page-from-the-dashboard",
+        group: "navigation",
+        what: "the header's Home works from the dashboard",
+        open: Some("Dashboard"),
+        hover: None,
+        click: Some("Home"),
+        subject: "heading:PathScale Solid.js Starter",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-header-log-in-reaches-the-login-page-from-the-dashboard",
+        group: "navigation",
+        what: "the header's Log in works from the dashboard",
+        open: Some("Dashboard"),
+        hover: None,
+        click: Some("Log in"),
+        subject: "heading:Welcome back",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-header-sign-up-reaches-the-signup-page-from-the-dashboard",
+        group: "navigation",
+        what: "the header's Sign up works from the dashboard",
+        open: Some("Dashboard"),
+        hover: None,
+        click: Some("Sign up"),
+        subject: "heading:Create an account",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-logo-goes-home-from-the-dashboard",
+        group: "navigation",
+        what: "the header logo is a link home, and not only a picture",
+        // Role-qualified, because the landing page's own heading contains the
+        // brand name too and a bare name would resolve to whichever came
+        // first in the tree.
+        open: Some("Dashboard"),
+        hover: None,
+        click: Some("link:PathScale"),
+        subject: "heading:PathScale Solid.js Starter",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    // ------------------------------------------------------- from the login
+    (
+        id: "the-header-home-reaches-the-landing-page-from-the-login-page",
+        group: "navigation",
+        what: "the header's Home works from the login page",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Home"),
+        subject: "heading:PathScale Solid.js Starter",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-header-dashboard-reaches-the-dashboard-from-the-login-page",
+        group: "navigation",
+        what: "the header's Dashboard works from the login page",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Dashboard"),
+        subject: "heading:Dashboard",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-login-page-reaches-the-signup-form",
+        group: "navigation",
+        what: "somebody without an account can get to one from here",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Sign up"),
+        subject: "heading:Create an account",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-login-page-offers-sign-up-twice",
+        group: "navigation",
+        what: "the form's own Sign up link is drawn as well as the header's",
+        // Same shape as the landing page's pair of Log in links: the card
+        // carries \"Don't have an account? Sign up\" under it, sharing a name
+        // with the header, so its presence is a count rather than a press.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:Sign up",
+        expect: Count,
+        expect_count: Some(2),
+    ),
+    (
+        id: "and-the-two-sign-up-links-are-not-stacked",
+        group: "navigation",
+        what: "both are somewhere a person could press",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:Sign up",
+        expect: DistinctPositions,
+    ),
+    (
+        id: "the-logo-goes-home-from-the-login-page",
+        group: "navigation",
+        what: "the header logo is a link home from the login page too",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("link:PathScale"),
+        subject: "heading:PathScale Solid.js Starter",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    // ------------------------------------------------------ from the signup
+    (
+        id: "the-header-home-reaches-the-landing-page-from-the-signup-page",
+        group: "navigation",
+        what: "the header's Home works from the signup page",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Home"),
+        subject: "heading:PathScale Solid.js Starter",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-header-dashboard-reaches-the-dashboard-from-the-signup-page",
+        group: "navigation",
+        what: "the header's Dashboard works from the signup page",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Dashboard"),
+        subject: "heading:Dashboard",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-signup-page-reaches-the-login-form",
+        group: "navigation",
+        what: "somebody who already has an account can get back to it",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Log in"),
+        subject: "heading:Welcome back",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-signup-page-offers-log-in-twice",
+        group: "navigation",
+        what: "the form's own Log in link is drawn as well as the header's",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:Log in",
+        expect: Count,
+        expect_count: Some(2),
+    ),
+    (
+        id: "and-the-signup-page-log-in-links-are-not-stacked",
+        group: "navigation",
+        what: "both are somewhere a person could press",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:Log in",
+        expect: DistinctPositions,
+    ),
+    (
+        id: "the-logo-goes-home-from-the-signup-page",
+        group: "navigation",
+        what: "the header logo is a link home from the signup page too",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("link:PathScale"),
+        subject: "heading:PathScale Solid.js Starter",
+        expect: Present,
+        outcome_timeout_ms: 3000,
     ),
 ]
