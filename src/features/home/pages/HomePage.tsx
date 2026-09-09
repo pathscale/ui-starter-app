@@ -12,7 +12,24 @@ const HomePage: Component = () => (
       gap="md"
       class="flex-1 px-4 py-16 text-center"
     >
-      <Text family="heading" size="xl" weight="bold" tracking="wide" class="text-4xl">
+      {/*
+        A heading in the accessibility tree, not only in the type scale.
+        `Text` renders a span, so `family="heading"` styled this title and left
+        the landing page with no heading at all: the semantic tree carried
+        thirty-nine nodes and not one of them was a heading, so a screen
+        reader had nothing to navigate by and neither did anything else that
+        reads the page. `DashboardPage` already says this about its own title;
+        the page a visitor arrives on had been missed.
+      */}
+      <Text
+        family="heading"
+        size="xl"
+        weight="bold"
+        tracking="wide"
+        class="text-4xl"
+        role="heading"
+        aria-level="1"
+      >
         PathScale Solid.js Starter
       </Text>
       <Text variant="muted" class="block max-w-xl">
