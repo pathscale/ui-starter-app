@@ -1,0 +1,224 @@
+// The theme control: the one piece of state this starter owns.
+//
+// It is also the cheapest liveness detector there is, which is why the group
+// exists at all rather than being three checks in `chrome.ron`. Solid 2 halts
+// the reactive system permanently when an error escapes every boundary, and a
+// halted page still paints: it renders once and then answers nothing. Two
+// sites in this fleet shipped in exactly that state and every render-only
+// check passed over them. This control's own label is derived from state, so
+// pressing it and reading the label back asks whether state still moves, with
+// no knowledge of what the page is for.
+//
+// The theme is also the only thing here that outlives a route change, so this
+// is where that is asked. The group carries it across all four surfaces and
+// puts it back at the end, so a second run of the same host starts where the
+// first one did.
+//
+// This file sorts last, so the light theme these checks switch into is not
+// left standing under anybody else's assertions. It repeats some of
+// `semantics.ron`'s contrast audits in the other palette, because a palette
+// that is legible in one theme is not thereby legible in the other and only
+// one of the two had ever been measured. That turned out to matter; see
+// below.
+//
+// The application starts dark: it reads `prefers-color-scheme` when nothing
+// has been stored, and the headless host reports dark. Nothing here assumes
+// that -- the first check normalises and skips its own preparation when the
+// theme is already where it wants it.
+//
+// ---------------------------------------------------------------------------
+//
+// There is no ink assertion on this control, and there should be. It draws
+// nothing:
+//
+//     capturing 12884901937 role=button name='Switch to light mode'
+//     36x36 at 1x, background #0e1215
+//     visible ink: 0 of 1296 pixels (0.00%)
+//     nothing was drawn: every pixel is the background colour
+//
+// The same in the light theme, and the same with the icon's explicit size
+// removed. Its label lives in `aria-label`, so the only thing a sighted
+// person has is the glyph, and there is no glyph: the header's theme control
+// is a blank square.
+//
+// It is not the stylesheet. `icon-[lucide--sun]` and `icon-[lucide--moon]`
+// are both in the built CSS with their masks and their data URIs, alongside
+// the six other lucide icons this site uses. Nor is it the engine's masking:
+// the login page's reveal control is the same shape -- an icon-only ghost
+// button -- and captures 80 of 784 pixels. What distinguishes them is that
+// the reveal control's icon is placed by `@pathscale/ui` and this one is
+// placed by this repository, as a bare `<Icon>` child of a `<Button>`.
+//
+// Written down rather than asserted, because an assertion here would be red
+// on every run and this is not a change these files can make.
+[
+    (
+        id: "pressing-the-theme-toggle-changes-the-theme",
+        group: "theme",
+        what: "the control offers the opposite theme once it has been used",
+        // The preparation normalises rather than assuming, and skips itself
+        // when the theme is already where it wants it, so the group means the
+        // same thing run alone and run after everything else.
+        open: Some("Home"),
+        hover: None,
+        prepare: Some("Switch to dark mode"),
+        prepare_unless: Some("button:Switch to light mode"),
+        click: Some("Switch to light mode"),
+        subject: "button:Switch to dark mode",
+        expect: Present,
+        outcome_timeout_ms: 8000,
+    ),
+    (
+        id: "and-the-old-label-is-gone",
+        group: "theme",
+        what: "the toggle re-rendered rather than gaining a second label",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Switch to light mode",
+        expect: Absent,
+    ),
+    // The light palette does not meet WCAG AA, and these are the measurements
+    // rather than an assertion, for the same reason as the icon above: the
+    // fix is a palette decision, not a change to a check file.
+    //
+    // The dark theme passes cleanly on every surface -- nine named painted
+    // nodes on the landing page, thirteen on the login page, all above their
+    // floor. Switch to light and, against what is actually stacked beneath
+    // each node:
+    //
+    //     3.71:1 < 4.50:1  link    Home
+    //     4.42:1 < 4.50:1  link    PathScale
+    //     4.42:1 < 4.50:1  link    Sign up
+    //     4.42:1 < 4.50:1  link    Get started
+    //     4.42:1 < 4.50:1  button  Sign in
+    //     4.42:1 < 4.50:1  link    Sign up          (the login page's own)
+    //
+    // The 4.42:1 cluster is one colour: `--color-base-content` in
+    // `src/styles/themes/light.css` is `oklch(25% 0.01 240)` on a
+    // `--color-base-100` of `oklch(98% 0.002 240)`. The header's active
+    // Home link is worse because its soft variant lightens it further. The
+    // dark theme's pair clears the floor with room to spare.
+    //
+    // What does pass in the light theme is checked below, so the palette
+    // cannot get worse without something noticing.
+    (
+        id: "the-theme-survives-a-route-change-to-the-dashboard",
+        group: "theme",
+        what: "the choice outlives the page it was made on",
+        // The theme signal lives outside the router. A route change that
+        // remounted it would reset the interface to the system preference
+        // and nothing on screen would say why.
+        open: None,
+        hover: None,
+        click: Some("Dashboard"),
+        subject: "button:Switch to dark mode",
+        expect: Paints,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-the-dashboard-is-readable-in-the-light-theme",
+        group: "theme",
+        what: "the dashboard's headings meet their contrast floor in the other palette",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading",
+        expect: Contrast,
+    ),
+    (
+        id: "the-theme-survives-a-route-change-to-the-login-page",
+        group: "theme",
+        what: "the choice outlives a second route change",
+        open: None,
+        hover: None,
+        click: Some("Log in"),
+        subject: "button:Switch to dark mode",
+        expect: Paints,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-the-login-fields-are-readable-in-the-light-theme",
+        group: "theme",
+        what: "the form's fields meet their contrast floor in the other palette",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "textbox",
+        expect: Contrast,
+    ),
+    (
+        id: "the-theme-survives-a-route-change-to-the-signup-page",
+        group: "theme",
+        what: "the choice outlives a third route change",
+        open: None,
+        hover: None,
+        click: Some("Sign up"),
+        subject: "button:Switch to dark mode",
+        expect: Paints,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-the-signup-fields-are-readable-in-the-light-theme",
+        group: "theme",
+        what: "all three fields meet their contrast floor in the other palette",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "textbox",
+        expect: Contrast,
+    ),
+    (
+        id: "the-theme-survives-a-route-change-back-to-the-landing-page",
+        group: "theme",
+        what: "the choice outlives a return to where it was made",
+        open: None,
+        hover: None,
+        click: Some("Home"),
+        subject: "button:Switch to dark mode",
+        expect: Paints,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-theme-goes-back",
+        group: "theme",
+        what: "the toggle is a toggle, and the interface is left as it was found",
+        open: None,
+        hover: None,
+        click: Some("Switch to dark mode"),
+        subject: "button:Switch to light mode",
+        expect: Present,
+        outcome_timeout_ms: 8000,
+    ),
+    (
+        id: "and-the-light-label-is-gone",
+        group: "theme",
+        what: "the return re-rendered too, rather than leaving both labels",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Switch to dark mode",
+        expect: Absent,
+        // The audit that follows reads computed styles, and the palette
+        // recascades a frame after the attribute that selects it. Without a
+        // quiet window it read a half-applied theme -- new backgrounds,
+        // old text colours -- and reported all seven links below their
+        // floor, which is neither theme.
+        settle_after_ms: 500,
+    ),
+    (
+        id: "and-the-landing-page-is-readable-again",
+        group: "theme",
+        what: "the restore reached the palette and not only the control's own label",
+        // This is the one check in the group that the light theme fails, and
+        // that is what makes it worth having. Four of the landing page's
+        // links are below their contrast floor in light and all of them are
+        // above it in dark, so a label that flipped while the stylesheet did
+        // not would leave this red. Everything else here would pass.
+        open: None,
+        hover: None,
+        click: None,
+        subject: "link",
+        expect: Contrast,
+    ),
+]
