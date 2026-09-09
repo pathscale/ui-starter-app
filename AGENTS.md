@@ -48,6 +48,30 @@ success.
 - A build that finishes suspiciously fast was cached, not rebuilt. Force a real rebuild when
   the rebuild is the thing you're verifying.
 
+### The rendered-outcome suite
+
+`tests/ps-qa/` holds this site's end-to-end checks: six groups, driven against the **built**
+site through a real browser engine rather than through jsdom, so a control that lays out
+correctly and draws nothing fails. `.github/workflows/qa.yml` runs every group on each pull
+request. To run them locally you need two binaries built from sibling checkouts:
+
+```sh
+cargo build --release --bin chuzz-headless          # in ~/code/chuzz
+cargo build --release -p ps-qa                      # in ~/code/ps-observability
+
+npm run build
+ps-qa --app tests/ps-qa/ps-qa.ron qa-hosted [group] \
+  --host <path-to>/chuzz-headless --page dist --checks tests/ps-qa/checks
+```
+
+Omit the group to run all six. Each check file opens with the reasoning for what it asserts
+and, where the site or the engine cannot currently satisfy an assertion, the measurement
+that says so — read the header before adding to one.
+
+Checks are bucketed by the surface their `open` names, so **every check must name the
+surface it measures** unless it is a deliberate continuation of the one directly above it.
+A check with no surface inherits whichever one the previous file left behind.
+
 ## PR discipline
 
 **Always paste the full PR URL** (`https://github.com/pathscale/ui-starter-app/pull/<n>`), not just the number, so it's
