@@ -23,7 +23,15 @@ const AppNavbar: Component = () => {
     <Navbar.Stack sticky class="top-0 z-10">
       <Navbar.Row bordered class="bg-base-100/80 backdrop-blur-md">
         <Navbar.Start>
-          <Link href={ROUTES.HOME} class="mr-4 no-underline">
+          {/*
+            `end`, because "/" is a prefix of every route.
+            `useLinkState` treats a href as a prefix unless told otherwise, so
+            the logo reported `aria-current="page"` on the dashboard and on
+            both auth pages: the semantic tree marked it `selected` wherever
+            you stood, which tells assistive technology that every page is the
+            home page.
+          */}
+          <Link href={ROUTES.HOME} end class="mr-4 no-underline">
             <Logo />
           </Link>
           <nav class="flex items-center gap-1">
