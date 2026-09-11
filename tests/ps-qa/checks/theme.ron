@@ -143,7 +143,7 @@
         open: None,
         hover: None,
         click: None,
-        subject: "textbox",
+        subject: "textbox:*",
         expect: Contrast,
     ),
     (
@@ -164,7 +164,7 @@
         open: None,
         hover: None,
         click: None,
-        subject: "textbox",
+        subject: "textbox:*",
         expect: Contrast,
     ),
     (
@@ -217,7 +217,7 @@
         open: None,
         hover: None,
         click: None,
-        subject: "link",
+        subject: "link:*",
         expect: Contrast,
     ),
 ]

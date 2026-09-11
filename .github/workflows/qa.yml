@@ -1,26 +1,4 @@
-# What the site does, checked against a real browser engine.
-#
-# The defect this started as: the Dashboard link pointed at a route with no
-# component, so pressing it left the navbar standing and rendered an empty
-# `#root`. A starter whose own navigation is broken teaches that shape to
-# everything built from it.
-#
-# It is not jsdom. `chuzz-headless` loads the built site through the same
-# loader, the same web-API shim and the same engine a tab uses, and `ps-qa`
-# drives it over a socket without linking any of it.
-#
-# Every group in `tests/ps-qa/checks` runs, and the list below is the whole
-# of it. Each one gets its own host, so a group cannot inherit the page or
-# the theme another left behind, and a group that kills the host -- which is
-# a thing the engine can be made to do -- does not take the rest with it.
-#
-# The host is built without `system-fonts`, so text here shapes to no glyphs and
-# nothing that needs one can be asked of it: a heading lays out at its line
-# width and zero height, and a bare inline anchor gets no box at all.
-# `tests/ps-qa/checks-fonts` holds the questions that need a font stack --
-# contrast over headings, and rendered order or containment with a heading at
-# one end -- and is deliberately not run here. Its own file says how to run it
-# against a fonts-enabled host.
+# Run every declared group, including newly added functionality.
 name: QA
 
 on:
@@ -60,12 +38,7 @@ jobs:
           # only; every declared transition is still required.
           QA_TIMEOUT_SCALE: 2
         run: |
-          for GROUP in auth chrome layout navigation semantics theme; do
-            echo "::group::$GROUP"
-            ps-qa --app tests/ps-qa/ps-qa.ron \
-              qa-hosted "$GROUP" \
-              --host "${{ steps.qa.outputs.host }}" \
-              --page dist \
-              --checks tests/ps-qa/checks
-            echo "::endgroup::"
-          done
+          ps-qa --app tests/ps-qa/ps-qa.ron \
+            qa-hosted \
+            --host "${{ steps.qa.outputs.host }}" \
+            --page dist --checks tests/ps-qa/checks

@@ -95,7 +95,7 @@
         open: Some("Home"),
         hover: None,
         click: None,
-        subject: "link",
+        subject: "link:*",
         expect: Contrast,
     ),
     (
@@ -105,7 +105,7 @@
         open: Some("Home"),
         hover: None,
         click: None,
-        subject: "button",
+        subject: "button:*",
         expect: Contrast,
     ),
     // ------------------------------------------------------- the dashboard
@@ -147,7 +147,7 @@
         open: Some("Dashboard"),
         hover: None,
         click: None,
-        subject: "link",
+        subject: "link:*",
         expect: Contrast,
     ),
     // ------------------------------------------------------- the login page
@@ -179,7 +179,7 @@
         open: Some("Log in"),
         hover: None,
         click: None,
-        subject: "textbox",
+        subject: "textbox:*",
         expect: Contrast,
     ),
     (
@@ -189,7 +189,7 @@
         open: Some("Log in"),
         hover: None,
         click: None,
-        subject: "button",
+        subject: "button:*",
         expect: Contrast,
     ),
     (
@@ -202,7 +202,7 @@
         open: Some("Log in"),
         hover: None,
         click: None,
-        subject: "link",
+        subject: "link:*",
         expect: Contrast,
     ),
     // ------------------------------------------------------ the signup page
@@ -234,7 +234,7 @@
         open: Some("Sign up"),
         hover: None,
         click: None,
-        subject: "textbox",
+        subject: "textbox:*",
         expect: Contrast,
     ),
     (
@@ -244,7 +244,7 @@
         open: Some("Sign up"),
         hover: None,
         click: None,
-        subject: "button",
+        subject: "button:*",
         expect: Contrast,
     ),
     (
@@ -254,7 +254,7 @@
         open: Some("Sign up"),
         hover: None,
         click: None,
-        subject: "link",
+        subject: "link:*",
         expect: Contrast,
     ),
 ]
