@@ -1,6 +1,5 @@
 /// <reference types="solid-js" />
 
-// biome-ignore lint/correctness/noUnusedVariables: used globally by TypeScript
 interface ImportMetaEnv {
   readonly VERSION: string;
   readonly API_URL?: string;
@@ -9,7 +8,6 @@ interface ImportMetaEnv {
   readonly MODE: string;
 }
 
-// biome-ignore lint/correctness/noUnusedVariables: used globally by TypeScript
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
