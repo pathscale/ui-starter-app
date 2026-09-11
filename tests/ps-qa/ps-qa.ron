@@ -21,7 +21,7 @@
 // "Display name" each name exactly one node in this application.
 AppProfile(
     surfaces: [
-        (name: "home", opener: "Home", marker: Some("Get started")),
+        (name: "home", opener: "Home", marker: Some("link:Get started")),
         // The dashboard is all text, so its marker is the card's `role="region"`
         // whose `aria-label` repeats its title. See `DashboardPage`: the region
         // exists so that this page has something with a box to be recognised by.
