@@ -49,7 +49,7 @@
         open: Some("Home"),
         hover: None,
         click: None,
-        subject: "heading",
+        subject: "heading:*",
         expect: Contrast,
     ),
     (
@@ -74,7 +74,7 @@
         open: Some("Dashboard"),
         hover: None,
         click: None,
-        subject: "heading",
+        subject: "heading:*",
         expect: Contrast,
     ),
     (
@@ -132,7 +132,7 @@
         open: None,
         hover: None,
         click: None,
-        subject: "heading",
+        subject: "heading:*",
         expect: Contrast,
     ),
     (
