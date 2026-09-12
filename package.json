@@ -32,7 +32,7 @@
   "license": "MIT",
   "dependencies": {
     "@iconify/tailwind4": "^1.0.6",
-    "@pathscale/ui": "^3.2.0",
+    "@pathscale/ui": "^3.2.2",
     "@standard-schema/spec": "^1.0.0",
     "@solidjs/router": "2.0.0-next.19",
     "@solidjs/web": "2.0.0-rc.4",

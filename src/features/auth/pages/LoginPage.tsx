@@ -26,6 +26,7 @@ const PasswordFieldControl: Component = () => {
   const password = useField("password");
   return (
     <PasswordField
+      id="login-password"
       name="password"
       label="Password"
       placeholder="Enter your password"
@@ -75,7 +76,9 @@ const LoginPage: Component = () => {
               />
               <PasswordFieldControl />
               <AuthMessage message={error()} />
-              <AuthSubmitButton class="mt-2">Sign in</AuthSubmitButton>
+              <AuthSubmitButton id="login-submit" class="mt-2">
+                Sign in
+              </AuthSubmitButton>
             </AuthFieldGroup>
           </Form>
 
