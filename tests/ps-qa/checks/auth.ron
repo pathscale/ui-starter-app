@@ -1,0 +1,596 @@
+// The two authentication forms this starter ships, driven against the built
+// site through a headless browser.
+//
+// There is no backend here and there is not meant to be: both pages carry a
+// `TODO: call your auth service here` where a real one would go. What they do
+// have is their own refusal, and that is the part a person copying this
+// template inherits -- so it is the part worth guarding. A starter whose form
+// silently accepts an empty submission teaches every application built from it
+// to do the same.
+//
+// Order is the check. The runner buckets checks by the surface their `open`
+// names and keeps file order inside a bucket, so everything below with
+// `open: Some("Log in")` runs as one uninterrupted sequence and everything
+// with `open: Some("Sign up")` runs as another. A field filled by one check is
+// still filled for the next, which is what lets a refusal be shown to survive
+// a username and then go when the password arrives. This file sorts first, so
+// no other group has touched either form when these run.
+//
+// `type_into` sets a value rather than appending to one, so a check can clear
+// a field by asking for the empty string and can put whitespace in it to ask
+// whether the form trims.
+//
+// Every refusal is addressed as `alert:` rather than as bare text. The role is
+// half the promise: a message that appears in a live region is announced, and
+// one that appears in a span is seen only by whoever happens to be looking at
+// that part of the screen.
+[
+    // ---------------------------------------------------------------- login
+    (
+        id: "the-login-form-is-reachable",
+        group: "auth",
+        what: "the header's Log in reaches a form that says what it is for",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "heading:Welcome back",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-login-form-asks-for-a-username",
+        group: "auth",
+        what: "a username field is drawn, not merely declared",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "textbox:Username",
+        expect: Paints,
+    ),
+    (
+        id: "the-login-form-asks-for-a-password",
+        group: "auth",
+        what: "a password field is drawn, not merely declared",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "textbox:Password",
+        expect: Paints,
+    ),
+    (
+        id: "the-login-form-offers-a-submit",
+        group: "auth",
+        what: "the form has a way to send itself",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "button:Sign in",
+        expect: Paints,
+    ),
+    (
+        id: "the-login-submit-is-not-pre-disabled",
+        group: "auth",
+        what: "the form can be submitted empty, which is what makes its refusal reachable",
+        // A form that greys out its submit until it is satisfied has no
+        // refusal to test and no refusal to fail. This one chose the other
+        // shape, so the check is that it kept it: a submit disabled here would
+        // silently delete every assertion below.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "button:Sign in",
+        expect: Enabled,
+    ),
+    (
+        id: "the-login-form-starts-without-a-complaint",
+        group: "auth",
+        what: "nothing is refused before anything has been submitted",
+        // The positive half of every `Absent` below. Without this, a page that
+        // failed to render its message at all would pass the two checks that
+        // ask for the message to be gone.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "alert:Enter your username and password.",
+        expect: Absent,
+    ),
+    (
+        id: "an-empty-sign-in-is-refused",
+        group: "auth",
+        what: "submitting nothing produces a live-region message rather than silence",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Sign in"),
+        subject: "alert:Enter your username and password.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-refusal-is-inside-the-form",
+        group: "auth",
+        what: "the message is drawn where the fields are, not somewhere off the card",
+        // A live region announces itself wherever it is mounted. A sighted
+        // person needs it next to what it is about, and a message that has
+        // escaped its container is a rendered defect that every name-based
+        // assertion above passes over.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "@alert",
+        compare: Some("@form"),
+        expect: ContainedBy,
+    ),
+    (
+        id: "the-username-field-takes-a-value",
+        group: "auth",
+        what: "the username field accepts what is typed into it",
+        // Measured separately from the submission on purpose. A refusal that
+        // will not clear has two explanations -- the form ignoring a field, or
+        // the field never taking the value -- and a check that only submits
+        // cannot tell them apart.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        type_into: Some("Username"),
+        text: Some("someone"),
+        subject: "textbox:Username",
+        expect: ValueChanges,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "a-username-alone-is-not-enough",
+        group: "auth",
+        what: "the refusal counts both fields, not the first one filled",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Sign in"),
+        subject: "alert:Enter your username and password.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-password-field-takes-a-value",
+        group: "auth",
+        what: "the password field accepts what is typed into it",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        type_into: Some("Password"),
+        text: Some("not-a-real-password"),
+        subject: "textbox:Password",
+        expect: ValueChanges,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-refusal-goes-when-both-are-given",
+        group: "auth",
+        what: "the message clears once the form has what it asked for",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Sign in"),
+        subject: "alert:Enter your username and password.",
+        expect: Absent,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "a-username-of-spaces-is-not-a-username",
+        group: "auth",
+        what: "the form trims before it decides, so whitespace is still empty",
+        // `onSubmit` calls `.trim()` on the username and not on the password,
+        // which is a decision worth pinning rather than rediscovering: a
+        // template's validation is copied verbatim into every application
+        // built from it.
+        open: Some("Log in"),
+        hover: None,
+        setup_type_into: Some("Username"),
+        setup_text: Some("   "),
+        click: Some("Sign in"),
+        subject: "alert:Enter your username and password.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-a-real-username-clears-it-again",
+        group: "auth",
+        what: "the refusal is about the value, not about having been shown once",
+        open: Some("Log in"),
+        hover: None,
+        setup_type_into: Some("Username"),
+        setup_text: Some("someone"),
+        click: Some("Sign in"),
+        subject: "alert:Enter your username and password.",
+        expect: Absent,
+        outcome_timeout_ms: 3000,
+    ),
+    // Whether the form survives a route change. Three checks rather than one:
+    // the refusal has to be shown to exist, the page has to be shown to have
+    // actually changed, and only then does its absence on return mean the
+    // form remounted rather than that nothing was ever there.
+    (
+        id: "a-refusal-is-standing-before-the-page-is-left",
+        group: "auth",
+        what: "there is something to survive",
+        open: Some("Log in"),
+        hover: None,
+        setup_type_into: Some("Username"),
+        setup_text: Some(""),
+        click: Some("Sign in"),
+        subject: "alert:Enter your username and password.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-the-login-page-is-left",
+        group: "auth",
+        what: "the route really changed rather than the click being swallowed",
+        open: None,
+        hover: None,
+        click: Some("Dashboard"),
+        subject: "heading:Dashboard",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-the-form-comes-back-clean",
+        group: "auth",
+        what: "a route change resets the form rather than carrying its last refusal",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "alert:Enter your username and password.",
+        expect: Absent,
+        outcome_timeout_ms: 3000,
+    ),
+    // Enter, which reaches a different code path from the button. A form that
+    // only submits from its button is unusable to anybody who types their
+    // password and presses Enter, and nothing about the rendered page says
+    // which of the two this is.
+    //
+    // It runs here, on the form the remount above just built, and nowhere
+    // else. Pressing Enter in a form whose fields have been set twice aborts
+    // the engine:
+    //
+    //     thread 'main' panicked at ps-blitz-dom-0.4.6/src/events/keyboard.rs:166
+    //     invalid SlotMap key used
+    //
+    // `implicit_form_submission` walks `controls_to_form` and indexes every
+    // control it finds. Setting a field's value re-creates that element, and
+    // the map keeps the id of the element that is gone, so the walk
+    // dereferences a dead key. One value is survivable; the second is not.
+    // The whole host dies with it, which is why the failure reads as "the
+    // inspector closed the connection" rather than as a verdict.
+    //
+    // Two checks are enough to reproduce it from nothing: set the password,
+    // set it again, press Enter. Both fields are untouched here, so nothing
+    // in this file provokes it -- and moving this check up into the sequence
+    // above brings the panic straight back.
+    (
+        id: "enter-in-the-password-field-submits-the-login-form",
+        group: "auth",
+        what: "the keyboard reaches the same submission the button does",
+        // Falsifiable because the check above left the refusal absent: a key
+        // that did nothing leaves it absent, and only a real submission of
+        // this empty form puts it back.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        key_on: Some("Password"),
+        key: Some("Enter"),
+        subject: "alert:Enter your username and password.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    // The reveal control comes last on this surface, and that placement is not
+    // cosmetic. `PasswordField` swaps the input's `type`, so Solid builds a
+    // new element and the old one becomes another dead entry in the engine's
+    // `controls_to_form` map. Everything that presses Enter in this form is
+    // above; nothing below it does.
+    (
+        id: "the-password-can-be-revealed",
+        group: "auth",
+        what: "the reveal control swaps to its opposite, so it is not a dead end",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Show password"),
+        subject: "button:Hide password",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-it-can-be-hidden-again",
+        group: "auth",
+        what: "revealing is reversible",
+        open: Some("Log in"),
+        hover: None,
+        click: Some("Hide password"),
+        subject: "button:Show password",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    // --------------------------------------------------------------- signup
+    (
+        id: "the-signup-form-is-reachable",
+        group: "auth",
+        what: "the header's Sign up reaches a form that says what it is for",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "heading:Create an account",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-signup-form-asks-for-a-display-name",
+        group: "auth",
+        what: "a display-name field is drawn",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "textbox:Display name",
+        expect: Paints,
+    ),
+    (
+        id: "the-signup-form-asks-for-an-email",
+        group: "auth",
+        what: "an email field is drawn",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "textbox:Email",
+        expect: Paints,
+    ),
+    (
+        id: "the-signup-form-asks-for-a-password",
+        group: "auth",
+        what: "a password field is drawn",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "textbox:Password",
+        expect: Paints,
+    ),
+    (
+        id: "the-signup-form-offers-a-submit",
+        group: "auth",
+        what: "the form has a way to send itself",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "button:Create account",
+        expect: Paints,
+    ),
+    (
+        id: "the-signup-submit-is-not-pre-disabled",
+        group: "auth",
+        what: "the form can be submitted empty, which is what makes its refusal reachable",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "button:Create account",
+        expect: Enabled,
+    ),
+    (
+        id: "the-signup-form-starts-without-a-complaint",
+        group: "auth",
+        what: "nothing is refused before anything has been submitted",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "alert:Fill in all fields to continue.",
+        expect: Absent,
+    ),
+    (
+        id: "an-empty-signup-is-refused",
+        group: "auth",
+        what: "submitting nothing produces a live-region message rather than silence",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Create account"),
+        subject: "alert:Fill in all fields to continue.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-signup-refusal-is-inside-the-form",
+        group: "auth",
+        what: "the message is drawn among the fields it is about",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "@alert",
+        compare: Some("@form"),
+        expect: ContainedBy,
+    ),
+    (
+        id: "the-display-name-field-takes-a-value",
+        group: "auth",
+        what: "the display-name field accepts what is typed into it",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        type_into: Some("Display name"),
+        text: Some("Someone"),
+        subject: "textbox:Display name",
+        expect: ValueChanges,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "one-of-three-fields-is-not-enough",
+        group: "auth",
+        what: "the refusal counts every field, not the first one filled",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Create account"),
+        subject: "alert:Fill in all fields to continue.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-email-field-takes-a-value",
+        group: "auth",
+        what: "the email field accepts what is typed into it",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        type_into: Some("Email"),
+        text: Some("someone@example.com"),
+        subject: "textbox:Email",
+        expect: ValueChanges,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-two-of-three-are-still-not-enough",
+        group: "auth",
+        what: "a second field filled does not satisfy a form that wants three",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Create account"),
+        subject: "alert:Fill in all fields to continue.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-signup-password-field-takes-a-value",
+        group: "auth",
+        what: "the signup password field accepts what is typed into it",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        type_into: Some("Password"),
+        text: Some("not-a-real-password"),
+        subject: "textbox:Password",
+        expect: ValueChanges,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "a-complete-signup-clears-the-refusal",
+        group: "auth",
+        what: "the refusal goes when every field the form asked for is filled",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Create account"),
+        subject: "alert:Fill in all fields to continue.",
+        expect: Absent,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "a-display-name-of-spaces-is-not-a-display-name",
+        group: "auth",
+        what: "the signup form trims the display name before it decides",
+        open: Some("Sign up"),
+        hover: None,
+        setup_type_into: Some("Display name"),
+        setup_text: Some("   "),
+        click: Some("Create account"),
+        subject: "alert:Fill in all fields to continue.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-a-real-display-name-clears-it-again",
+        group: "auth",
+        what: "the display-name refusal is about the value",
+        open: Some("Sign up"),
+        hover: None,
+        setup_type_into: Some("Display name"),
+        setup_text: Some("Someone"),
+        click: Some("Create account"),
+        subject: "alert:Fill in all fields to continue.",
+        expect: Absent,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "an-email-of-spaces-is-not-an-email",
+        group: "auth",
+        what: "the signup form trims the email too",
+        open: Some("Sign up"),
+        hover: None,
+        setup_type_into: Some("Email"),
+        setup_text: Some("   "),
+        click: Some("Create account"),
+        subject: "alert:Fill in all fields to continue.",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-a-real-email-clears-it-again",
+        group: "auth",
+        what: "the email refusal is about the value",
+        open: Some("Sign up"),
+        hover: None,
+        setup_type_into: Some("Email"),
+        setup_text: Some("someone@example.com"),
+        click: Some("Create account"),
+        subject: "alert:Fill in all fields to continue.",
+        expect: Absent,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-the-signup-page-is-left",
+        group: "auth",
+        what: "the route really changed rather than the click being swallowed",
+        open: None,
+        hover: None,
+        click: Some("Dashboard"),
+        subject: "heading:Dashboard",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-the-signup-form-comes-back-clean",
+        group: "auth",
+        what: "a route change resets the form rather than carrying its last refusal",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "alert:Fill in all fields to continue.",
+        expect: Absent,
+        outcome_timeout_ms: 3000,
+    ),
+    // There is no Enter check for this form, and the reason is not that
+    // nobody wrote one.
+    //
+    // Enter in this form's password field does nothing at all. Blitz's
+    // `implicit_form_submission` counts the form's fields that block implicit
+    // submission and gives up when there is more than one, which the HTML
+    // specification only allows for a form with no submit button. This form
+    // has a submit button and three fields, so the key is swallowed.
+    //
+    // The login form's Enter check passes for a reason that is worth knowing
+    // before someone concludes the two pages disagree: the count is over
+    // fields carrying an explicit `type` attribute, and that form's username
+    // input carries none. It has two fields and the engine sees one. Add
+    // `type: "text"` to it and its keyboard submission stops working too,
+    // with nothing in this repository having changed.
+    //
+    // Asserting the current behaviour would write the defect down as the
+    // contract, so this is a comment rather than a check.
+    // Last on this surface too, for the engine panic described above the
+    // login page's pair.
+    (
+        id: "the-signup-password-can-be-revealed",
+        group: "auth",
+        what: "the second form's reveal control is wired too, not only the first's",
+        // Written out rather than assumed from the login page. The two pages
+        // build the same control from the same component and could still
+        // differ: each passes its own `showLabel`/`hideLabel` pair, and a
+        // typo in one of them is invisible until something presses it.
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Show password"),
+        subject: "button:Hide password",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-the-signup-password-can-be-hidden-again",
+        group: "auth",
+        what: "revealing is reversible on the signup form too",
+        open: Some("Sign up"),
+        hover: None,
+        click: Some("Hide password"),
+        subject: "button:Show password",
+        expect: Present,
+        outcome_timeout_ms: 3000,
+    ),
+]

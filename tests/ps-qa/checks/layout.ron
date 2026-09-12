@@ -1,0 +1,333 @@
+// What the renderer actually drew, measured rather than described.
+//
+// Every other group in this suite is satisfied by a node with a non-zero box.
+// That is a low bar and it is the one a broken composition clears: a control
+// with the right role, the right name and the right text passes while
+// rendering as a sliver, sitting on top of its neighbour, or hanging outside
+// the card it belongs to. None of that is visible to the semantic tree.
+//
+// So this group asks about boxes. Reading order down each page, containment
+// inside the card that owns it, and the two sizes that would say a control had
+// lost its padding or its width.
+//
+// The numbers are minimums, not exact matches, except where an exact one is
+// the point. A minimum fails on the regression that matters -- a control
+// collapsing -- without failing every time a font metric moves by a pixel.
+//
+// Both ends of a relation have to have a box, which is what decides which
+// nodes may stand for a region here. A heading's box is exactly its shaped
+// glyphs, so on CI's fontless host the landing title lays out at 0x0 and a
+// comparison against it asks nothing that can be answered. The padded controls
+// in the same region -- the hero's own call to action, a field, a card -- keep
+// their boxes with or without a font catalogue, and they are the boxes the
+// layout actually places, so naming them is the stronger question as well as
+// the portable one. `tests/ps-qa/checks-fonts` holds the one comparison here
+// that genuinely needs a glyph.
+[
+    // ------------------------------------------------------- the home page
+    (
+        id: "the-header-draws-above-the-landing-hero",
+        group: "layout",
+        what: "the header is at the top of the page, not somewhere in it",
+        // Rendered order, not DOM order. A sticky header that lost its
+        // positioning is still the first child of the document.
+        //
+        // The hero is represented by its call to action rather than by its
+        // title: the button is the box the centred column actually places, and
+        // it has one on a host with no fonts.
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:Home",
+        compare: Some("link:Get started"),
+        expect: Above,
+    ),
+    (
+        id: "the-theme-control-sits-to-the-right-of-the-navigation",
+        group: "layout",
+        what: "the header's two halves did not collapse into one another",
+        // `Navbar.Start` and `Navbar.End` are a horizontal split. When that
+        // split fails the controls all end up in one run and every
+        // name-based assertion in `chrome.ron` still passes.
+        open: Some("Home"),
+        hover: None,
+        prepare: Some("Switch to dark mode"),
+        prepare_unless: Some("button:Switch to light mode"),
+        click: None,
+        subject: "button:Switch to light mode",
+        compare: Some("link:Dashboard"),
+        expect: RightOf,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-sign-up-sits-to-the-right-of-the-theme-control",
+        group: "layout",
+        what: "the header's trailing group is in the order it was written",
+        open: Some("Home"),
+        hover: None,
+        prepare: Some("Switch to dark mode"),
+        prepare_unless: Some("button:Switch to light mode"),
+        click: None,
+        subject: "link:Sign up",
+        compare: Some("button:Switch to light mode"),
+        expect: RightOf,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-theme-control-is-a-square",
+        group: "layout",
+        what: "the icon button kept the square shape it asks for",
+        // `width=\"square\"` is the whole styling contract of this control.
+        // Exact rather than a minimum: a square that has become a rectangle
+        // is the failure, and a minimum cannot see it.
+        //
+        // By name, not by slot. `@button` is every control the button
+        // component draws, header links included, and the first of those is
+        // 62px wide -- so the slot selector answers a question about the
+        // navigation while appearing to answer one about this control.
+        open: Some("Home"),
+        hover: None,
+        prepare: Some("Switch to dark mode"),
+        prepare_unless: Some("button:Switch to light mode"),
+        click: None,
+        subject: "button:Switch to light mode",
+        compare: None,
+        expect: Measures,
+        expect_size: Some("=36x=36"),
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-call-to-action-is-big-enough-to-press",
+        group: "layout",
+        what: "the primary control is a target rather than a line of text",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:Get started",
+        expect: Measures,
+        expect_size: Some("x36"),
+    ),
+    // ------------------------------------------------------- the dashboard
+    (
+        id: "the-header-draws-above-the-dashboard-card",
+        group: "layout",
+        what: "the header is at the top of the dashboard too",
+        // `@card` rather than the page title, for the same reason the landing
+        // page's check names the hero's button, and it is the same pair of
+        // nodes the login and signup checks below use.
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "link:Home",
+        compare: Some("@card"),
+        expect: Above,
+    ),
+    // The two other questions this page raised -- the title above the card,
+    // and the section heading inside it -- have a heading at one end and
+    // nowhere else to move it to, since the card is the only thing on this
+    // page with a box of its own. Both are in `tests/ps-qa/checks-fonts`.
+    // ------------------------------------------------------- the login page
+    (
+        id: "the-header-draws-above-the-login-card",
+        group: "layout",
+        what: "the header is above the form rather than over it",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:Home",
+        compare: Some("@card"),
+        expect: Above,
+    ),
+    (
+        id: "the-login-form-is-inside-its-card",
+        group: "layout",
+        what: "the form did not escape the card that frames it",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "@form",
+        compare: Some("@card"),
+        expect: ContainedBy,
+    ),
+    (
+        id: "every-login-field-is-inside-the-card",
+        group: "layout",
+        what: "no field hangs outside the frame",
+        // Addressed by slot rather than by name, so this covers the whole
+        // family at once and would catch a field added later that nobody
+        // wrote a check for.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "@input-field",
+        compare: Some("@card"),
+        expect: ContainedBy,
+    ),
+    (
+        id: "the-login-fields-are-not-stacked-on-each-other",
+        group: "layout",
+        what: "two fields, two places",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "@input-field",
+        expect: DistinctPositions,
+    ),
+    (
+        id: "the-username-field-draws-above-the-password-field",
+        group: "layout",
+        what: "the form reads in the order it was written",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "textbox:Username",
+        compare: Some("textbox:Password"),
+        expect: Above,
+    ),
+    (
+        id: "the-password-field-draws-above-the-submit",
+        group: "layout",
+        what: "the submit is at the end of the form",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "textbox:Password",
+        compare: Some("button:Sign in"),
+        expect: Above,
+    ),
+    (
+        id: "the-reveal-control-sits-inside-the-password-row",
+        group: "layout",
+        what: "the reveal control is beside the field it belongs to",
+        // It is positioned inside the input's own box. A control that lost
+        // that positioning still paints, still has a name and still works;
+        // it is just somewhere else on the page.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "button:Show password",
+        compare: Some("textbox:Password"),
+        expect: RightOf,
+    ),
+    (
+        id: "the-sign-in-button-spans-the-form",
+        group: "layout",
+        what: "the submit is full width rather than shrink-wrapped to its label",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "button:Sign in",
+        expect: Measures,
+        expect_size: Some("300x36"),
+    ),
+    (
+        id: "the-attribution-draws-below-the-submit",
+        group: "layout",
+        what: "the attribution is under the form, not in the middle of it",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "button:Sign in",
+        compare: Some("link:Secure Auth by Honey"),
+        expect: Above,
+    ),
+    // ------------------------------------------------------ the signup page
+    (
+        id: "the-header-draws-above-the-signup-card",
+        group: "layout",
+        what: "the header is above the form rather than over it",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:Home",
+        compare: Some("@card"),
+        expect: Above,
+    ),
+    (
+        id: "the-signup-form-is-inside-its-card",
+        group: "layout",
+        what: "the form did not escape the card that frames it",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "@form",
+        compare: Some("@card"),
+        expect: ContainedBy,
+    ),
+    (
+        id: "every-signup-field-is-inside-the-card",
+        group: "layout",
+        what: "no field hangs outside the frame",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "@input-field",
+        compare: Some("@card"),
+        expect: ContainedBy,
+    ),
+    (
+        id: "the-signup-fields-are-not-stacked-on-each-other",
+        group: "layout",
+        what: "three fields, three places",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "@input-field",
+        expect: DistinctPositions,
+    ),
+    (
+        id: "the-display-name-field-draws-above-the-email-field",
+        group: "layout",
+        what: "the form reads in the order it was written",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "textbox:Display name",
+        compare: Some("textbox:Email"),
+        expect: Above,
+    ),
+    (
+        id: "the-email-field-draws-above-the-password-field",
+        group: "layout",
+        what: "the form reads in the order it was written",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "textbox:Email",
+        compare: Some("textbox:Password"),
+        expect: Above,
+    ),
+    (
+        id: "the-signup-password-field-draws-above-the-submit",
+        group: "layout",
+        what: "the submit is at the end of the form",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "textbox:Password",
+        compare: Some("button:Create account"),
+        expect: Above,
+    ),
+    (
+        id: "the-create-account-button-spans-the-form",
+        group: "layout",
+        what: "the submit is full width rather than shrink-wrapped to its label",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "button:Create account",
+        expect: Measures,
+        expect_size: Some("300x36"),
+    ),
+    (
+        id: "the-signup-attribution-draws-below-the-submit",
+        group: "layout",
+        what: "the attribution is under the form, not in the middle of it",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "button:Create account",
+        compare: Some("link:Secure Auth by Honey"),
+        expect: Above,
+    ),
+]

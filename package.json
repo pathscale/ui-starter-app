@@ -20,7 +20,7 @@
     "commit": "cz"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,css,md}": [
+    "*.{ts,tsx,js,jsx,json,css}": [
       "biome check --write"
     ]
   },
@@ -32,14 +32,15 @@
   "license": "MIT",
   "dependencies": {
     "@iconify/tailwind4": "^1.0.6",
-    "@pathscale/ui": "^2.11.10",
+    "@pathscale/ui": "^3.2.2",
+    "@standard-schema/spec": "^1.0.0",
     "@solidjs/router": "2.0.0-next.19",
     "@solidjs/web": "2.0.0-rc.4",
     "clsx": "^2.1.1",
     "glob": "^11.0.3",
     "popmotion": "^11.0.5",
     "solid-js": "2.0.0-rc.4",
-    "solid-layouts": "^0.2.1",
+    "solid-layouts": "^0.2.4",
     "tailwind-merge": "^3.2.0"
   },
   "devDependencies": {
@@ -64,6 +65,7 @@
     "typescript": "^5.7.2"
   },
   "overrides": {
+    "@solidjs/signals": "2.0.0-rc.4",
     "babel-preset-solid": "^2.0.0-rc.2"
   }
 }

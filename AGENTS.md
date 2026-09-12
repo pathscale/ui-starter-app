@@ -9,12 +9,22 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
 
 ## Invariants (don't break these)
 
+- **No Python.** Not a script, not `python3 -c`, not a heredoc. Reaching for it is the
+  tell that a step is being solved by parsing when the tool that owns the answer could
+  just be asked. Do not swap it for another parser either, and do not assume `jq` is
+  present: it does not ship with macOS. A fixed-shape field is one `sed -nE` line;
+  anything needing real parsing belongs in this repo's own language, where it can be
+  tested. If a task seems to need Python, the approach is wrong.
+
 - **Read [`docs/frontend-conventions.md`](docs/frontend-conventions.md) before opening
   implementation files.** It is the frontend working agreement: SolidJS/`@pathscale/ui`
   conventions, and a context-efficient workflow. Reading it first keeps
   context small and avoids re-deriving patterns that already exist.
 - **`npm run typecheck` must pass.** It is the type gate for this repo; a build succeeding is not the same as types being sound.
-- **`npm` is the package manager** — its lockfile is authoritative. Don't introduce a second one by running npm/yarn/pnpm here.
+- **`npm` is the package manager.** Do not introduce a second one by running
+  another package manager here. Its lockfile is not committed: dependencies
+  are caret ranges, and a committed lock holds them still, because a recorded
+  version keeps satisfying its range and nothing is ever reconsidered.
 - **Docs describe what is true now.** If you change behaviour, update the README and any affected doc in the same change.
 
 ## Build & run
@@ -37,6 +47,40 @@ success.
   error is not something you introduced, and saying so requires checking.
 - A build that finishes suspiciously fast was cached, not rebuilt. Force a real rebuild when
   the rebuild is the thing you're verifying.
+
+### The rendered-outcome suite
+
+`tests/ps-qa/checks` holds this site's end-to-end checks: six groups, driven against the
+**built** site through a real browser engine rather than through jsdom, so a control that
+lays out correctly and draws nothing fails. `.github/workflows/qa.yml` runs every group on
+each pull request. To run them locally you need two binaries built from sibling checkouts:
+
+```sh
+cargo build --release --bin chuzz-headless          # in ~/code/chuzz
+cargo build --release -p ps-qa                      # in ~/code/ps-observability
+
+npm run build
+ps-qa --app tests/ps-qa/ps-qa.ron qa-hosted [group] \
+  --host <path-to>/chuzz-headless --page dist --checks tests/ps-qa/checks
+```
+
+Omit the group to run all six. Each check file opens with the reasoning for what it asserts
+and, where the site or the engine cannot currently satisfy an assertion, the measurement
+that says so — read the header before adding to one.
+
+Checks are bucketed by the surface their `open` names, so **every check must name the
+surface it measures** unless it is a deliberate continuation of the one directly above it.
+A check with no surface inherits whichever one the previous file left behind.
+
+**Write nothing in `checks/` that needs a glyph.** CI's host is built without
+`system-fonts`, so text there shapes to no glyphs: a heading lays out at its line width and
+zero height, and a bare inline anchor gets no box at all. Anything asking such a node to
+paint, standing it at one end of `Above`/`RightOf`/`ContainedBy`/`DistinctPositions`, or
+naming it in a surface marker, fails on a runner while the site is fine. Use `Present` for a
+node whose observable is its text, `Count` where the words name more than one node, and a
+padded control — a field, a button, `@card` — wherever a box is needed.
+`tests/ps-qa/checks-fonts` is the group for the questions that genuinely need a font stack;
+it is deliberately not run in CI and its own header says how to run it.
 
 ## PR discipline
 

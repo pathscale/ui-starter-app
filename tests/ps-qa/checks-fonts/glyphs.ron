@@ -1,0 +1,200 @@
+// The questions that need a font stack, kept out of the directory CI runs.
+//
+// CI's headless host is built without `system-fonts`, deliberately: a Linux
+// runner then needs no faces installed and the binary carries no renderer it
+// would not otherwise need. The cost is exact. Text shapes to no glyphs, so a
+// heading lays out at its line width and *zero height*, and a bare inline
+// anchor gets no box at all. Measured on this site, fontless: the landing
+// title is `0x0`, the dashboard's two headings are `736x0` and `670x0`, and
+// the login card's own `Sign up` anchor is `0x0` while the header's is
+// `26x36`.
+//
+// Two kinds of question cannot be asked there, and both are here:
+//
+//   * **`Contrast` over text-shaped roles** -- the audit skips any node with a
+//     zero box, so naming `heading` on a fontless host selects nothing and the
+//     check fails for selecting nothing rather than for finding a defect. Note
+//     that the *padded* contrast checks stayed in `checks/`: the audits over
+//     `link`, `button` and `textbox` read the colours the renderer resolved,
+//     not the pixels it committed, and what they need is a box rather than a
+//     glyph. The light theme's failure is still asserted there.
+//   * **Rendered order and distinct position over text** -- `Above` and
+//     `DistinctPositions` need every end to have a box, and a heading with
+//     zero height or an anchor with no box does not, even though its position
+//     is correct and the comparison would be true.
+//
+// Run these against a host built *with* `system-fonts`, which is what a
+// developer has locally:
+//
+//   ps-qa --app tests/ps-qa/ps-qa.ron \
+//     qa-hosted glyphs --host <fonts-enabled chuzz-headless> \
+//     --page dist --checks tests/ps-qa/checks-fonts
+//
+// Everything below except the theme switch is the check as it was written in
+// `layout.ron`, `semantics.ron`, `theme.ron`, `chrome.ron` and
+// `navigation.ron`, moved rather than weakened. The group is its own
+// directory and inherits no position and no theme from any of them, which is
+// why the light-theme audit brings its own switch: `theme.ron`'s sequence is
+// in the other directory and does not run here.
+//
+// Checks are bucketed by the surface their `open` names, in the order
+// `ps-qa.ron` lists surfaces, and keep file order inside a bucket. The order
+// below is written to match that: home, dashboard, login, signup.
+[
+    // ------------------------------------------------------- the home page
+    (
+        id: "the-landing-headings-are-readable",
+        group: "glyphs",
+        what: "the title meets the contrast floor against what is actually behind it",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "heading:*",
+        expect: Contrast,
+    ),
+    (
+        id: "the-landing-heading-draws-above-its-call-to-action",
+        group: "glyphs",
+        what: "the hero reads in the order it was written",
+        // `layout.ron` asks the neighbouring question -- the header above the
+        // hero's call to action -- with two padded controls, and that one runs
+        // in CI. This is the half that needs the title to have a box.
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "heading:PathScale Solid.js Starter",
+        compare: Some("link:Get started"),
+        expect: Above,
+    ),
+    // ------------------------------------------------------- the dashboard
+    (
+        id: "the-dashboard-headings-are-readable",
+        group: "glyphs",
+        what: "both headings meet the contrast floor",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "heading:*",
+        expect: Contrast,
+    ),
+    (
+        id: "the-dashboard-heading-draws-above-its-section",
+        group: "glyphs",
+        what: "the page title comes before the card it introduces",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "heading:Dashboard",
+        compare: Some("heading:Next steps"),
+        expect: Above,
+    ),
+    (
+        id: "the-dashboard-section-heading-is-inside-its-card",
+        group: "glyphs",
+        what: "the card contains what it is supposed to contain",
+        // `@card` is the card and has a box either way; the heading inside it
+        // does not, which is the end that puts this check here.
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "heading:Next steps",
+        compare: Some("@card"),
+        expect: ContainedBy,
+    ),
+    (
+        id: "and-the-theme-can-be-switched-to-light-here",
+        group: "glyphs",
+        what: "the control offers the opposite theme once it has been used",
+        // The preamble the audit below needs, and an assertion in its own
+        // right. It normalises rather than assuming a starting theme, and
+        // skips its own preparation when the theme is already where it wants
+        // it, exactly as `theme.ron`'s first check does.
+        //
+        // `settle_after_ms` is not optional here. The audit reads computed
+        // styles and the palette recascades a frame after the attribute that
+        // selects it; without a quiet window it reads a half-applied theme --
+        // new backgrounds, old text colours -- and reports a palette that is
+        // neither of the two.
+        open: None,
+        hover: None,
+        prepare: Some("Switch to dark mode"),
+        prepare_unless: Some("button:Switch to light mode"),
+        click: Some("Switch to light mode"),
+        subject: "button:Switch to dark mode",
+        expect: Present,
+        outcome_timeout_ms: 8000,
+        settle_after_ms: 500,
+    ),
+    (
+        id: "and-the-dashboard-is-readable-in-the-light-theme",
+        group: "glyphs",
+        what: "the dashboard's headings meet their contrast floor in the other palette",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:*",
+        expect: Contrast,
+    ),
+    (
+        id: "and-the-theme-goes-back",
+        group: "glyphs",
+        what: "the toggle is a toggle, and the interface is left as it was found",
+        // The checks below this one are about boxes rather than colours, so
+        // the palette they run under does not change what they measure. This
+        // restores it anyway, so a second run of the same host starts where
+        // the first one did.
+        open: None,
+        hover: None,
+        click: Some("Switch to dark mode"),
+        subject: "button:Switch to light mode",
+        expect: Present,
+        outcome_timeout_ms: 8000,
+    ),
+    // ------------------------------------------------------- the login page
+    (
+        id: "the-header-draws-sign-up-on-the-login-page",
+        group: "glyphs",
+        what: "the Sign up link is drawn on the login page",
+        // `link:Sign up` names two nodes on this page and `Paints` covers the
+        // whole family, so this asks about the card's own footer anchor as
+        // well as the header's link. That is the stronger reading and it is
+        // the one that needs a glyph: the anchor's box is its shaped text and
+        // nothing else.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:Sign up",
+        expect: Paints,
+    ),
+    (
+        id: "and-the-two-sign-up-links-are-not-stacked",
+        group: "glyphs",
+        what: "both are somewhere a person could press",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:Sign up",
+        expect: DistinctPositions,
+    ),
+    // ------------------------------------------------------ the signup page
+    (
+        id: "the-header-draws-log-in-on-the-signup-page",
+        group: "glyphs",
+        what: "the Log in link is drawn on the signup page",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:Log in",
+        expect: Paints,
+    ),
+    (
+        id: "and-the-signup-page-log-in-links-are-not-stacked",
+        group: "glyphs",
+        what: "both are somewhere a person could press",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:Log in",
+        expect: DistinctPositions,
+    ),
+]
