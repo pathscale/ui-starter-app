@@ -37,10 +37,10 @@ const HomePage: Component = () => (
         shell and auth screens ready to wire to your backend.
       </Text>
       <Flex gap="sm" class="mt-2">
-        <Button href={ROUTES.SIGNUP} variant="solid" flavor="primary">
+        <Button id="home-get-started" href={ROUTES.SIGNUP} variant="solid" flavor="primary">
           Get started
         </Button>
-        <Button href={ROUTES.LOGIN} variant="ghost">
+        <Button id="home-login" href={ROUTES.LOGIN} variant="ghost">
           Log in
         </Button>
       </Flex>

@@ -92,6 +92,7 @@ const SignupPage: Component = () => {
 
           <div class="mt-4">
             <AuthPoweredBy
+              id="signup-powered-by"
               href="https://honey.id/"
               align="center"
               variant="subtle"
@@ -102,7 +103,10 @@ const SignupPage: Component = () => {
         </AuthCard>
 
         <Text size="sm" variant="muted" class="mt-6 block text-center">
-          Already have an account? <Link href={ROUTES.LOGIN}>Log in</Link>
+          Already have an account?{" "}
+          <Link id="signup-login-link" href={ROUTES.LOGIN}>
+            Log in
+          </Link>
         </Text>
       </div>
     </Flex>

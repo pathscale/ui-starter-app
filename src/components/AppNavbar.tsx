@@ -31,12 +31,17 @@ const AppNavbar: Component = () => {
             you stood, which tells assistive technology that every page is the
             home page.
           */}
-          <Link href={ROUTES.HOME} end class="mr-4 no-underline">
+          <Link id="nav-logo" href={ROUTES.HOME} end class="mr-4 no-underline">
             <Logo />
           </Link>
           <nav class="flex items-center gap-1">
             {NAV_LINKS.map((link) => (
-              <Button href={link.href} size="sm" variant={isActive(link.href) ? "soft" : "ghost"}>
+              <Button
+                id={`nav-${link.label.toLowerCase()}`}
+                href={link.href}
+                size="sm"
+                variant={isActive(link.href) ? "soft" : "ghost"}
+              >
                 {link.label}
               </Button>
             ))}
@@ -45,10 +50,10 @@ const AppNavbar: Component = () => {
         <Navbar.End>
           <Flex align="center" gap="sm">
             <ThemeToggle />
-            <Button href={ROUTES.LOGIN} variant="ghost" size="sm">
+            <Button id="nav-login" href={ROUTES.LOGIN} variant="ghost" size="sm">
               Log in
             </Button>
-            <Button href={ROUTES.SIGNUP} variant="solid" flavor="primary" size="sm">
+            <Button id="nav-signup" href={ROUTES.SIGNUP} variant="solid" flavor="primary" size="sm">
               Sign up
             </Button>
           </Flex>
