@@ -84,6 +84,7 @@ const LoginPage: Component = () => {
 
           <div class="mt-4">
             <AuthPoweredBy
+              id="login-powered-by"
               href="https://honey.id/"
               align="center"
               variant="subtle"
@@ -94,7 +95,10 @@ const LoginPage: Component = () => {
         </AuthCard>
 
         <Text size="sm" variant="muted" class="mt-6 block text-center">
-          Don't have an account? <Link href={ROUTES.SIGNUP}>Sign up</Link>
+          Don't have an account?{" "}
+          <Link id="login-signup-link" href={ROUTES.SIGNUP}>
+            Sign up
+          </Link>
         </Text>
       </div>
     </Flex>
