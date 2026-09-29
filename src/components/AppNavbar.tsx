@@ -23,12 +23,25 @@ const AppNavbar: Component = () => {
     <Navbar.Stack sticky class="top-0 z-10">
       <Navbar.Row bordered class="bg-base-100/80 backdrop-blur-md">
         <Navbar.Start>
-          <Link href={ROUTES.HOME} class="mr-4 no-underline">
+          {/*
+            `end`, because "/" is a prefix of every route.
+            `useLinkState` treats a href as a prefix unless told otherwise, so
+            the logo reported `aria-current="page"` on the dashboard and on
+            both auth pages: the semantic tree marked it `selected` wherever
+            you stood, which tells assistive technology that every page is the
+            home page.
+          */}
+          <Link id="nav-logo" href={ROUTES.HOME} end class="mr-4 no-underline">
             <Logo />
           </Link>
           <nav class="flex items-center gap-1">
             {NAV_LINKS.map((link) => (
-              <Button href={link.href} size="sm" variant={isActive(link.href) ? "soft" : "ghost"}>
+              <Button
+                id={`nav-${link.label.toLowerCase()}`}
+                href={link.href}
+                size="sm"
+                variant={isActive(link.href) ? "soft" : "ghost"}
+              >
                 {link.label}
               </Button>
             ))}
@@ -37,10 +50,10 @@ const AppNavbar: Component = () => {
         <Navbar.End>
           <Flex align="center" gap="sm">
             <ThemeToggle />
-            <Button href={ROUTES.LOGIN} variant="ghost" size="sm">
+            <Button id="nav-login" href={ROUTES.LOGIN} variant="ghost" size="sm">
               Log in
             </Button>
-            <Button href={ROUTES.SIGNUP} variant="solid" flavor="primary" size="sm">
+            <Button id="nav-signup" href={ROUTES.SIGNUP} variant="solid" flavor="primary" size="sm">
               Sign up
             </Button>
           </Flex>

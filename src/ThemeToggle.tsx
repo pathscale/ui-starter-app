@@ -10,6 +10,7 @@ export const ThemeToggle: Component = () => {
 
   return (
     <Button
+      id="nav-theme"
       type="button"
       variant="ghost"
       width="square"

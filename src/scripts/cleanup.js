@@ -43,4 +43,4 @@ if (existsSync(htmlPath)) {
   writeFileSync(htmlPath, html);
 }
 
-console.log(`Cleanup completed. Version: ${version}`);
+process.stdout.write(`Cleanup completed. Version: ${version}\n`);

@@ -26,6 +26,7 @@ const PasswordFieldControl: Component = () => {
   const password = useField("password");
   return (
     <PasswordField
+      id="login-password"
       name="password"
       label="Password"
       placeholder="Enter your password"
@@ -33,7 +34,7 @@ const PasswordFieldControl: Component = () => {
       hideLabel="Hide password"
       autocomplete="current-password"
       value={String(password.value() ?? "")}
-      onInput={(value) => password.handleChange(value)}
+      onChange={(value) => password.handleChange(value)}
       onBlur={password.handleBlur}
       invalid={password.invalid()}
       startIcon={<Icon src="icon-[lucide--lock]" width={16} height={16} />}
@@ -75,12 +76,15 @@ const LoginPage: Component = () => {
               />
               <PasswordFieldControl />
               <AuthMessage message={error()} />
-              <AuthSubmitButton class="mt-2">Sign in</AuthSubmitButton>
+              <AuthSubmitButton id="login-submit" class="mt-2">
+                Sign in
+              </AuthSubmitButton>
             </AuthFieldGroup>
           </Form>
 
           <div class="mt-4">
             <AuthPoweredBy
+              id="login-powered-by"
               href="https://honey.id/"
               align="center"
               variant="subtle"
@@ -91,7 +95,10 @@ const LoginPage: Component = () => {
         </AuthCard>
 
         <Text size="sm" variant="muted" class="mt-6 block text-center">
-          Don't have an account? <Link href={ROUTES.SIGNUP}>Sign up</Link>
+          Don't have an account?{" "}
+          <Link id="login-signup-link" href={ROUTES.SIGNUP}>
+            Sign up
+          </Link>
         </Text>
       </div>
     </Flex>

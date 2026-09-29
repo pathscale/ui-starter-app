@@ -129,6 +129,40 @@ route table; it is a consumer of layer 2, never an alternative to it.
 So "`routes.ts` or `routing/`?" is a false choice: an app with `routing/` has `routes.ts`
 too, and both sit on `config/routes.ts`.
 
+## The build: `@pathscale/ui` is a Layout bundle
+
+`@pathscale/ui` 3.x does not ship ordinary Solid components. Its components are
+**Layouts**, and an application that consumes it has to run the Solid Layouts application
+compiler over its own source before Solid lowers JSX. There is no graceful fallback: a
+missing plugin, manifest or runtime is a hard build error, so this wiring is part of the
+skeleton, not an optimisation.
+
+Three pieces, all in [`rsbuild.config.ts`](../rsbuild.config.ts) and
+[`package.json`](../package.json):
+
+1. **The packages.** `@pathscale/ui` and `solid-layouts` are runtime dependencies;
+   `rsbuild-plugin-solid-layouts` is a dev dependency. `@standard-schema/spec` is an
+   optional peer of `@pathscale/ui` that `createForm`'s published types name
+   unconditionally, so `tsc --noEmit` needs it present even when no form declares a
+   schema.
+
+2. **`pluginSolid2LayoutsApplication({ layouts: ["@pathscale/ui"] })`, listed first.** It
+   resolves `<Button>` against the Layout manifest each listed package publishes. It must
+   run *before* the Babel/Solid transform, because after that transform there is no
+   `<Button>` left to resolve, only `_$createComponent` calls. The `Solid2` spelling is
+   deliberate: `pluginSolidLayoutsApplication` is the Solid 1.9 arm. A second library, for
+   example an in-repo design system, is added to the same `layouts` array.
+
+3. **The `solid-layouts` resolve aliases.** `solid-layouts` ships one build arm per Solid
+   major and its bare entry is the 1.9 one. Solid 2 needs `solid-layouts/solid-2`, and the
+   four aliases are how a consumer selects it. The paired `ignoreWarnings` entry silences
+   the `splitProps`/`omit` export warning the bundler raises when it links both arms of a
+   runtime feature check whose dead branch is never evaluated.
+
+`@rsbuild/plugin-solid` is deliberately absent, and the reason is written where the
+decision lives, in `rsbuild.config.ts`. Copy that file wholesale when starting a new app
+rather than reassembling it from memory.
+
 ## Adding something new — where does it go?
 
 | you are adding | it goes in |

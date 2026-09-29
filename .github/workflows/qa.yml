@@ -1,0 +1,44 @@
+# Run every declared group, including newly added functionality.
+name: QA
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  rendered-outcomes:
+    runs-on: ubicloud-standard-4
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      # The checks drive the built site, not the dev server: what ships is what
+      # is asked about.
+      - name: Build
+        run: bun run build
+
+      - name: Headless browser host
+        id: qa
+        uses: pathscale/chuzz/.github/actions/headless-host@master
+        with:
+          token: ${{ secrets.SIBLING_REPOS_TOKEN }}
+
+      - name: Rendered outcomes
+        env:
+          # A shared runner is slower than a laptop for outcomes that pass
+          # locally well inside the budget. This widens scheduling deadlines
+          # only; every declared transition is still required.
+          QA_TIMEOUT_SCALE: 2
+        run: |
+          ps-qa --app tests/ps-qa/ps-qa.ron \
+            qa-hosted \
+            --host "${{ steps.qa.outputs.host }}" \
+            --page dist --checks tests/ps-qa/checks
