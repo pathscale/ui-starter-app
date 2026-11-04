@@ -10,7 +10,7 @@
   "scripts": {
     "start": "rsbuild dev",
     "dev": "rsbuild dev",
-    "build": "npm run typecheck && rsbuild build && bun run cleanup",
+    "build": "bun run typecheck && rsbuild build && bun run cleanup",
     "typecheck": "tsc --noEmit",
     "preview": "rsbuild preview",
     "cleanup": "bun run src/scripts/cleanup.js",

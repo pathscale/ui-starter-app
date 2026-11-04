@@ -5,7 +5,7 @@ the single source of truth for the rules: Codex, Cursor and Gemini CLI read `AGE
 natively, and Claude Code loads it through the `@AGENTS.md` import in
 [`CLAUDE.md`](CLAUDE.md). **Never fork these rules into a per-vendor file.**
 
-**JavaScript/TypeScript application / site** (`solid-starter-kit`), built with `npm`.
+**JavaScript/TypeScript application / site** (`solid-starter-kit`), built with Bun.
 
 ## Invariants (don't break these)
 
@@ -13,18 +13,18 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
   implementation files.** It is the frontend working agreement: SolidJS/`@pathscale/ui`
   conventions, and a context-efficient workflow. Reading it first keeps
   context small and avoids re-deriving patterns that already exist.
-- **`npm run typecheck` must pass.** It is the type gate for this repo; a build succeeding is not the same as types being sound.
-- **`npm` is the package manager** — its lockfile is authoritative. Don't introduce a second one by running npm/yarn/pnpm here.
+- **`bun run typecheck` must pass.** It is the type gate for this repo; a build succeeding is not the same as types being sound.
+- **Bun is the package manager.** Do not introduce npm, yarn, pnpm, or a lockfile here.
 - **Docs describe what is true now.** If you change behaviour, update the README and any affected doc in the same change.
 
 ## Build & run
 
 ```bash
-npm install
-npm run dev
-npm run build
-npm run typecheck
-npm run lint
+bun install
+bun run dev
+bun run build
+bun run typecheck
+bun run lint
 ```
 
 ## Verification
