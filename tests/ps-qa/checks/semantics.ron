@@ -1,0 +1,260 @@
+// What the page reports about itself to anything that is not a pair of eyes.
+//
+// Two defects in this repository were of exactly this kind and neither was
+// visible in a screenshot. The landing page's title was styled as a heading
+// and was a span, so the page a visitor arrives on had no heading structure at
+// all. The header logo matched "/" as a prefix, so it reported
+// `aria-current="page"` on every route -- the semantic tree marked it selected
+// wherever you stood, which tells a screen reader that every page is the home
+// page.
+//
+// Both are now checked here, and both checks fail if the fix is reverted.
+//
+// Heading counts rather than heading presence. A page that grows a second
+// top-level title is as wrong as one with none, and only a count sees it.
+// `heading:` with no name selects the whole family, which is what makes that
+// question askable at all.
+//
+// The contrast checks address a bare role rather than a `role:name` selector,
+// because the audit matches names and roles by substring: `heading` reads as
+// "every heading on this surface". They sample the theme the application
+// starts in; `theme.ron` repeats them in the other one.
+//
+// The audit needs a box, not a glyph: it reads the colours the renderer
+// resolved rather than the pixels it committed, and it skips any node laid out
+// at zero height. That is why the contrast checks over `link`, `button` and
+// `textbox` are here and the two over `heading` are not. A heading's box is
+// exactly its shaped glyphs, so on CI's fontless host `heading` selects
+// nothing and the check fails for selecting nothing rather than for finding a
+// defect. Both live in `tests/ps-qa/checks-fonts`, unchanged.
+[
+    // ------------------------------------------------------- the home page
+    (
+        id: "the-landing-page-has-a-heading",
+        group: "semantics",
+        what: "the page a visitor arrives on can be navigated by heading",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "heading:PathScale Solid.js Starter",
+        expect: Present,
+    ),
+    (
+        id: "and-the-landing-page-has-exactly-one",
+        group: "semantics",
+        what: "the title is the heading, and the paragraph under it is not",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "heading:",
+        expect: Count,
+        expect_count: Some(1),
+    ),
+    (
+        id: "the-header-is-a-navigation-landmark",
+        group: "semantics",
+        what: "the header's links are announced as navigation rather than as loose links",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "navigation:",
+        expect: Paints,
+    ),
+    (
+        id: "the-logo-is-current-on-the-landing-page",
+        group: "semantics",
+        what: "the logo marks itself as the current page where it is one",
+        // The positive half of the pair below. Without it, a logo that never
+        // reported currency anywhere would satisfy an assertion that it stops
+        // reporting it when you leave.
+        open: Some("Dashboard"),
+        hover: None,
+        click: Some("Home"),
+        subject: "link:PathScale",
+        expect: SelectionChanges,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "and-stops-being-current-when-you-leave-it",
+        group: "semantics",
+        what: "the logo does not claim every page is the home page",
+        // Follows the node's own id across the route change rather than
+        // matching by name, so the verdict is about this link and not about
+        // whichever link happened to be resolved second.
+        open: Some("Home"),
+        hover: None,
+        click: Some("Dashboard"),
+        subject: "link:PathScale",
+        expect: SelectionChanges,
+        outcome_timeout_ms: 3000,
+    ),
+    (
+        id: "the-landing-links-are-readable",
+        group: "semantics",
+        what: "every link on the landing page meets its contrast floor",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "link:*",
+        expect: Contrast,
+    ),
+    (
+        id: "the-landing-controls-are-readable",
+        group: "semantics",
+        what: "the theme control's icon meets the graphical contrast floor",
+        open: Some("Home"),
+        hover: None,
+        click: None,
+        subject: "button:*",
+        expect: Contrast,
+    ),
+    // ------------------------------------------------------- the dashboard
+    (
+        id: "the-dashboard-names-itself-in-a-heading",
+        group: "semantics",
+        what: "the page title is a heading and not only a type size",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "heading:Dashboard",
+        expect: Present,
+    ),
+    (
+        id: "and-its-section-is-a-heading-too",
+        group: "semantics",
+        what: "the card's title is announced as a section rather than as bold text",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "heading:Next steps",
+        expect: Present,
+    ),
+    (
+        id: "and-the-dashboard-has-exactly-those-two",
+        group: "semantics",
+        what: "the descriptive paragraphs are not headings",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "heading:",
+        expect: Count,
+        expect_count: Some(2),
+    ),
+    (
+        id: "the-dashboard-links-are-readable",
+        group: "semantics",
+        what: "the header's links meet their contrast floor on this surface too",
+        open: Some("Dashboard"),
+        hover: None,
+        click: None,
+        subject: "link:*",
+        expect: Contrast,
+    ),
+    // ------------------------------------------------------- the login page
+    (
+        id: "the-login-page-names-itself-in-a-heading",
+        group: "semantics",
+        what: "the form says what it is for, as a heading",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "heading:Welcome back",
+        expect: Present,
+    ),
+    (
+        id: "and-the-login-page-has-exactly-one-heading",
+        group: "semantics",
+        what: "the card's description is not a second title",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "heading:",
+        expect: Count,
+        expect_count: Some(1),
+    ),
+    (
+        id: "the-login-fields-are-readable",
+        group: "semantics",
+        what: "the fields' text meets the contrast floor, including the placeholder chrome",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "textbox:*",
+        expect: Contrast,
+    ),
+    (
+        id: "the-login-controls-are-readable",
+        group: "semantics",
+        what: "the submit and the reveal control meet their contrast floors",
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "button:*",
+        expect: Contrast,
+    ),
+    (
+        id: "the-login-links-are-readable",
+        group: "semantics",
+        what: "the attribution and the cross-link meet their contrast floors",
+        // The attribution is drawn `variant=\"subtle\"` and the cross-link
+        // sits inside muted text, which is where a contrast failure on this
+        // page would be.
+        open: Some("Log in"),
+        hover: None,
+        click: None,
+        subject: "link:*",
+        expect: Contrast,
+    ),
+    // ------------------------------------------------------ the signup page
+    (
+        id: "the-signup-page-names-itself-in-a-heading",
+        group: "semantics",
+        what: "the form says what it is for, as a heading",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "heading:Create an account",
+        expect: Present,
+    ),
+    (
+        id: "and-the-signup-page-has-exactly-one-heading",
+        group: "semantics",
+        what: "the card's description is not a second title",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "heading:",
+        expect: Count,
+        expect_count: Some(1),
+    ),
+    (
+        id: "the-signup-fields-are-readable",
+        group: "semantics",
+        what: "all three fields meet the contrast floor",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "textbox:*",
+        expect: Contrast,
+    ),
+    (
+        id: "the-signup-controls-are-readable",
+        group: "semantics",
+        what: "the submit and the reveal control meet their contrast floors",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "button:*",
+        expect: Contrast,
+    ),
+    (
+        id: "the-signup-links-are-readable",
+        group: "semantics",
+        what: "the attribution and the cross-link meet their contrast floors",
+        open: Some("Sign up"),
+        hover: None,
+        click: None,
+        subject: "link:*",
+        expect: Contrast,
+    ),
+]

@@ -15,17 +15,12 @@ export type AllRouteValues = (typeof ROUTES)[keyof typeof ROUTES];
 export const getRoute = (key: RouteKey): RouteValue => ROUTES[key];
 
 export const isValidRoute = (path: string): boolean => {
-  const allRoutes: AllRouteValues[] = [
-    ROUTES.HOME,
-    ROUTES.LOGIN,
-    ROUTES.SIGNUP,
-    ROUTES.ADMIN,
-  ];
+  const allRoutes: AllRouteValues[] = [ROUTES.HOME, ROUTES.LOGIN, ROUTES.SIGNUP, ROUTES.ADMIN];
 
   return allRoutes.includes(path as AllRouteValues);
 };
 
 export const isAuthRoute = (path: string): boolean => {
   const authRoutes = [ROUTES.LOGIN, ROUTES.SIGNUP];
-  return authRoutes.includes(path as any);
+  return authRoutes.some((route) => route === path);
 };
