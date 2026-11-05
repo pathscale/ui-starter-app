@@ -4,7 +4,7 @@ A minimalist starter kit for Solid.js applications using [@pathscale/ui](https:/
 
 ## Features
 
-- Feature-based architecture (`auth`, `home`)
+- Feature-based architecture (`auth`, `home`, `dashboard`)
 - Modern build system with RSBuild
 - Tailwind CSS styling with reusable `@pathscale/ui` components
 - Dark/light theme support

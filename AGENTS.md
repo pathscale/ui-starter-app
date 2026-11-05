@@ -9,12 +9,21 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
 
 ## Invariants (don't break these)
 
+- **No Python.** Not a script, not `python3 -c`, not a heredoc. Reaching for it is the
+  tell that a step is being solved by parsing when the tool that owns the answer could
+  just be asked. Do not swap it for another parser either, and do not assume `jq` is
+  present: it does not ship with macOS. A fixed-shape field is one `sed -nE` line;
+  anything needing real parsing belongs in this repo's own language, where it can be
+  tested. If a task seems to need Python, the approach is wrong.
+
 - **Read [`docs/frontend-conventions.md`](docs/frontend-conventions.md) before opening
   implementation files.** It is the frontend working agreement: SolidJS/`@pathscale/ui`
   conventions, and a context-efficient workflow. Reading it first keeps
   context small and avoids re-deriving patterns that already exist.
 - **`bun run typecheck` must pass.** It is the type gate for this repo; a build succeeding is not the same as types being sound.
 - **Bun is the package manager.** Do not introduce npm, yarn, pnpm, or a lockfile here.
+  Dependencies are caret ranges; a committed lock holds them still because a
+  recorded version keeps satisfying its range and nothing is ever reconsidered.
 - **Docs describe what is true now.** If you change behaviour, update the README and any affected doc in the same change.
 
 ## Build & run
@@ -49,7 +58,7 @@ each pull request. To run them locally you need two binaries built from sibling 
 cargo build --release --bin chuzz-headless          # in ~/code/chuzz
 cargo build --release -p ps-qa                      # in ~/code/ps-observability
 
-npm run build
+bun run build
 ps-qa --app tests/ps-qa/ps-qa.ron qa-hosted [group] \
   --host <path-to>/chuzz-headless --page dist --checks tests/ps-qa/checks
 ```
