@@ -3,6 +3,7 @@ import type { Component } from "solid-js";
 import { ROUTES } from "~/config/routes";
 import LoginPage from "~/features/auth/pages/LoginPage";
 import SignupPage from "~/features/auth/pages/SignupPage";
+import DashboardPage from "~/features/dashboard/pages/DashboardPage";
 import HomePage from "~/features/home/pages/HomePage";
 import AppShell from "~/layouts/AppShell";
 import AuthLayout from "~/layouts/AuthLayout";
@@ -26,6 +27,7 @@ const Routes = createRouter({
       component: AppShell,
       children: [
         { path: ROUTES.HOME, component: HomePage },
+        { path: ROUTES.DASHBOARD, component: DashboardPage },
         {
           component: AuthLayout,
           children: [

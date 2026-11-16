@@ -2,7 +2,7 @@ export const ROUTES = {
   HOME: "/",
   LOGIN: "/login",
   SIGNUP: "/signup",
-  ADMIN: "/admin",
+  DASHBOARD: "/dashboard",
 } as const;
 
 // Type definitions
@@ -19,7 +19,7 @@ export const isValidRoute = (path: string): boolean => {
     ROUTES.HOME,
     ROUTES.LOGIN,
     ROUTES.SIGNUP,
-    ROUTES.ADMIN,
+    ROUTES.DASHBOARD,
   ];
 
   return allRoutes.includes(path as AllRouteValues);
@@ -27,5 +27,5 @@ export const isValidRoute = (path: string): boolean => {
 
 export const isAuthRoute = (path: string): boolean => {
   const authRoutes = [ROUTES.LOGIN, ROUTES.SIGNUP];
-  return authRoutes.includes(path as any);
+  return authRoutes.some((route) => route === path);
 };
