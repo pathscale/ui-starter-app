@@ -32,3 +32,10 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# Lockfiles are not committed. Dependencies are caret ranges, and a committed
+# lock holds them still: a recorded version keeps satisfying its range, so
+# nothing is ever reconsidered and no build reports that it is behind. Without
+# one, each build resolves the newest version in range, and a bad upstream
+# release fails the build that picked it up.
+bun.lock
